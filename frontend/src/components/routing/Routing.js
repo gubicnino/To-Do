@@ -1,13 +1,14 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import TodoList from '../todos/TodoList';
 import TodoForm from '../todos/TodoForm';
+import Index from '../index/Index';
 
 export default function Routing() {
   return (
     <Routes>
       {/* Redirect root to todos */}
-      <Route path="/" element={<Navigate to="/todos" replace />} />
+      <Route path="/" element={<Index />} />
       
       {/* Todo routes */}
       <Route path="/todos" element={<TodoList />} />
