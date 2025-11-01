@@ -27,6 +27,7 @@
 .navbar-menu {
   list-style: none;
   display: flex;
+  align-items: center;
   gap: 2rem;
   margin: 0;
   padding: 0;
@@ -44,4 +45,12 @@
 .navbar-link:hover {
   background-color: #4CAF50;
   color: white;
+}
+.logout-btn {
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline;
 }

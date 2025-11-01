@@ -2,9 +2,27 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../common';
 import './Index.css';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import Modal from '../common/Modal';
+import LoginForm from '../auth/LoginForm';
 
 export default function Index() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
+  useEffect(() => {
+    // Check if redirected from protected route
+    if (searchParams.get('login') === 'required') {
+      setIsLoginModalOpen(true);
+      // Clean up URL
+      setSearchParams({});
+    }
+  }, [searchParams, setSearchParams]);
+   const handleCloseModal = () => {
+    setIsLoginModalOpen(false);
+  };
 
   return (
     <div className="landing-page">
@@ -63,6 +81,9 @@ export default function Index() {
           Start Now - It's Free
         </Button>
       </section>
+      <Modal isOpen={isLoginModalOpen} onClose={handleCloseModal}>
+        <LoginForm onSuccess={handleCloseModal} />
+      </Modal>
     </div>
   );
 }

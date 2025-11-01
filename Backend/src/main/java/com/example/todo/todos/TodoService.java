@@ -1,9 +1,11 @@
 package com.example.todo.todos;
 
 import java.util.List;
-
+import com.example.todo.user.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.example.todo.user.UserRepository;
 
 import java.util.Optional;
 
@@ -11,16 +13,29 @@ import java.util.Optional;
 @Transactional
 public class TodoService {
     private final TodoRepository todoRepository;
+    private final UserRepository userRepository;
     
-    public TodoService(TodoRepository todoRepository) {
+    public TodoService(TodoRepository todoRepository, UserRepository userRepository) {
         this.todoRepository = todoRepository;
+        this.userRepository = userRepository;
     }
     
     // Get all todos
     public List<Todo> getAllTodos() {
         return (List<Todo>) todoRepository.findAll();
     }
-    
+    // Get all todos for a specific user
+    public List<Todo> getTodosByUserId(Integer userId) {
+        return todoRepository.findByUserId(userId);
+    }
+    // Create todo for a specific user
+    public Todo createTodo(Integer userId, Todo todo) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        todo.setUser(user);  // Link todo to user
+        return todoRepository.save(todo);
+    }
     // Get single todo by ID
     public Optional<Todo> getTodoById(Integer id) {
         return todoRepository.findById(id);

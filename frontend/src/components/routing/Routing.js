@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import TodoList from '../todos/TodoList';
 import TodoForm from '../todos/TodoForm';
 import Index from '../index/Index';
+import ProtectedRoute from './ProtectedRoute';
 
 export default function Routing() {
   return (
@@ -11,10 +12,10 @@ export default function Routing() {
       <Route path="/" element={<Index />} />
       
       {/* Todo routes */}
-      <Route path="/todos" element={<TodoList />} />
-      <Route path="/todos/new" element={<TodoForm />} />
-      <Route path="/todos/:id/edit" element={<TodoForm />} />
-      
+      <Route path="/todos" element={<ProtectedRoute><TodoList /></ProtectedRoute>} />
+      <Route path="/todos/new" element={<ProtectedRoute><TodoForm /></ProtectedRoute>} />
+      <Route path="/todos/:id/edit" element={<ProtectedRoute><TodoForm /></ProtectedRoute>} />
+
       {/* 404 fallback */}
       <Route path="*" element={<div>Page not found</div>} />
     </Routes>

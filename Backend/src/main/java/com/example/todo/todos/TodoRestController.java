@@ -15,10 +15,16 @@ public class TodoRestController {
         this.todoService = todoService;
     }
     
-    // GET /api/v1/todos - Get all todos
+    // GET /api/v1/todos - Get ALL todos
     @GetMapping
     public List<Todo> getAllTodos() {
-        return (List<Todo>) todoService.getAllTodos();
+        return todoService.getAllTodos();
+    }
+
+    // GET /api/v1/todos/user/{userId} - Get todos for specific user
+    @GetMapping("/user/{userId}")
+    public List<Todo> getTodosByUser(@PathVariable Integer userId) {
+        return todoService.getTodosByUserId(userId);
     }
     
     // GET /api/v1/todos/{id} - Get single todo by ID
@@ -28,10 +34,10 @@ public class TodoRestController {
             .orElseThrow(() -> new RuntimeException("Todo not found with id: " + id));
     }
     
-    // POST /api/v1/todos - Create new todo
+    // POST /api/v1/todos?userId=1 - Create todo for a user
     @PostMapping
-    public Todo createTodo(@RequestBody Todo todo) {
-        return todoService.createTodo(todo);
+    public Todo createTodo(@RequestParam Integer userId, @RequestBody Todo todo) {
+        return todoService.createTodo(userId, todo);
     }
     
     // PUT /api/v1/todos/{id} - Update existing todo

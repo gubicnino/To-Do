@@ -1,31 +1,37 @@
 import React, { useEffect, useState } from 'react';
-import { getTodos, deleteTodo } from '../../services/todos';
+import { deleteTodo, getUserTodos } from '../../services/todos';
 import { Link, useNavigate } from 'react-router-dom';
 import './TodoList.css';
+import { useUser } from '../../context/UserContext';
 
 
 export default function TodoList() {
   const [todos, setTodos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const {currentUser} = useUser();
+  const userId = currentUser?.id;
   const navigate = useNavigate();
 
   useEffect(() => {
-    load();
-  }, []);
-
-  const load = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await getTodos();
-      setTodos(data);
-    } catch (err) {
-      setError(err.message || 'Failed to load');
-    } finally {
-      setLoading(false);
+    const load = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await getUserTodos(userId);
+        setTodos(data);
+      } catch (err) {
+        setError(err.message || 'Failed to load');
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (userId) {
+      load();
     }
-  };
+  }, [userId]);  
+
+  
 
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this todo?')) return;

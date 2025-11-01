@@ -37,6 +37,7 @@ public class UserService {
             .map(existingUser -> {
                 existingUser.setUsername(updatedUser.getUsername());
                 existingUser.setEmail(updatedUser.getEmail());
+                existingUser.setPassword(updatedUser.getPassword());
                 return userRepository.save(existingUser);
             })
             .orElseThrow(() -> new RuntimeException("User not found with id: " + id));

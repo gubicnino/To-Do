@@ -1,5 +1,8 @@
 package com.example.todo.todos;
 
+import com.example.todo.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -13,4 +16,9 @@ public class Todo {
     
     private String title;
     private String description;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
+    private User user;
 }
