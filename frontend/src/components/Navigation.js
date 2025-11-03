@@ -10,7 +10,6 @@ export default function Navigation() {
   const navigate = useNavigate();
   const { isLoggedIn, logout } = useUser();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-
   const handleAccountClick = (e) => {
     if (!isLoggedIn) {
       e.preventDefault();
