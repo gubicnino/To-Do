@@ -37,9 +37,9 @@ Vsak uporabnik vidi in upravlja **samo svoja opravila** (user-specific data).
 
 ### Backend
 - **Java**: 25
-- **Spring Boot**: 3.x
+- **Spring Boot**: 3.5.7
 - **Spring Data JPA**: Za delo z bazo podatkov
-- **MySQL**: 8.x
+- **MySQL**: 8.4.7
 - **Maven**: Upravljanje odvisnosti
 - **REST API**: Komunikacija med frontend-om in backend-om
 
@@ -52,7 +52,7 @@ Vsak uporabnik vidi in upravlja **samo svoja opravila** (user-specific data).
 - **CSS3**: Stilizacija
 
 ### Baza podatkov
-- **MySQL**: 8.x
+- **MySQL**: 8.4.7
 - Dve glavni tabeli:
   - `users` (id, username, email, password)
   - `todos` (id, title, description, user_id)
@@ -149,11 +149,11 @@ Prepričajte se, da imate nameščeno:
    - Preverite: `java --version`
    - Prenos: https://www.oracle.com/java/technologies/downloads/
 
-3. **Maven 3.x**
+3. **Maven 3.9.11**
    - Preverite: `mvn --version`
    - Prenos: https://maven.apache.org/download.cgi
 
-4. **MySQL 8.x**
+4. **MySQL 8.4.7**
    - Preverite: `mysql --version`
    - Prenos: https://dev.mysql.com/downloads/mysql/
 
