@@ -234,10 +234,6 @@ spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
 
-# CORS configuration (za razvoj)
-spring.web.cors.allowed-origins=http://localhost:3000
-spring.web.cors.allowed-methods=GET,POST,PUT,DELETE,OPTIONS
-spring.web.cors.allowed-headers=*
 ```
 
 #### Namestite backend odvisnosti:
