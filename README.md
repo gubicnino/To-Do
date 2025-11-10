@@ -928,11 +928,6 @@ npm install
 
 Ta projekt je narejen za učne namene kot del šolskega projekta.
 
----
-
-## 👥 Avtorji
-
-- **Vaše ime** - [gubicnino](https://github.com/gubicnino)
 
 ---
 
