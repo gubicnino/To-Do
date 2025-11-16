@@ -6,15 +6,40 @@ Celostna aplikacija za upravljanje opravil (todos) z Java Spring Boot backend-om
 
 ## 📋 Kazalo
 
-1. [Pregled projekta](#pregled-projekta)
-2. [Tehnologije](#tehnologije)
-3. [Projektna struktura](#projektna-struktura)
-4. [Navodila za namestitev](#navodila-za-namestitev)
-5. [Zagon aplikacije](#zagon-aplikacije)
-6. [Dokumentacija za razvijalce](#dokumentacija-za-razvijalce)
-7. [Standardi kodiranja](#standardi-kodiranja)
-8. [API Endpoints](#api-endpoints)
-9. [Navodila za prispevanje](#navodila-za-prispevanje)
+1. [Vizija projekta](#vizija-projekta)
+2. [Pregled projekta](#pregled-projekta)
+3. [Tehnologije](#tehnologije)
+4. [Projektna struktura](#projektna-struktura)
+5. [Navodila za namestitev](#navodila-za-namestitev)
+6. [Zagon aplikacije](#zagon-aplikacije)
+7. [Dokumentacija za razvijalce](#dokumentacija-za-razvijalce)
+8. [Standardi kodiranja](#standardi-kodiranja)
+9. [API Endpoints](#api-endpoints)
+10. [Navodila za prispevanje](#navodila-za-prispevanje)
+
+---
+
+## 🌟 Vizija projekta
+
+**Namen aplikacije:**
+Todo CRUD aplikacija je zasnovana kot enostavna, a zmogljiva rešitev za osebno upravljanje opravil in nalog. Njen glavni namen je uporabnikom omogočiti učinkovito organizacijo vsakodnevnih obveznosti, projektnih nalog in dolgoročnih ciljev na enem mestu.
+
+**Kaj želimo doseči:**
+Naš cilj je ustvariti intuitivno in hitro aplikacijo, ki uporabnikom omogoča nemoteno sledenje svojim opravilom brez nepotrebne kompleksnosti. Želimo ponuditi osnovno, a robustno platformo za upravljanje nalog, ki jo je enostavno razširiti z dodatnimi funkcionalnostmi po potrebi.
+
+**Komu je namenjena:**
+Aplikacija je namenjena:
+- **Posameznikom**, ki iščejo preprosto rešitev za dnevno organizacijo opravil
+- **Študentom**, ki potrebujejo pregleden sistem za sledenje učnim nalogam in projektom
+- **Profesionalcem**, ki želijo ločeno voditi osebna in delovna opravila
+- **Razvijalcem**, ki iščejo osnovno CRUD aplikacijo kot izhodišče za lastne projekte
+
+**Kako rešuje problem:**
+Aplikacija naslavlja ključne izzive upravljanja opravil:
+- **Personalizacija**: Vsak uporabnik upravlja svoja opravila v varnem, ločenem okolju
+- **Enostavnost**: Minimalistični vmesnik omogoča hitro dodajanje in urejanje opravil brez učenja zapletenih funkcij
+- **Dostopnost**: Spletna aplikacija je dostopna iz kateregakoli naprave z brskalnikom
+- **Razširljivost**: Modularno zasnovan kodni sistem omogoča enostavno dodajanje novih funkcionalnosti (oznake, prioritete, roke, skupinska opravila, itd.)
 
 ---
 
