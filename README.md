@@ -6,16 +6,16 @@ Celostna aplikacija za upravljanje opravil (todos) z Java Spring Boot backend-om
 
 ## 📋 Kazalo
 
-1. [Vizija projekta](#vizija-projekta)
-2. [Pregled projekta](#pregled-projekta)
-3. [Tehnologije](#tehnologije)
-4. [Projektna struktura](#projektna-struktura)
-5. [Navodila za namestitev](#navodila-za-namestitev)
-6. [Zagon aplikacije](#zagon-aplikacije)
-7. [Dokumentacija za razvijalce](#dokumentacija-za-razvijalce)
-8. [Standardi kodiranja](#standardi-kodiranja)
-9. [API Endpoints](#api-endpoints)
-10. [Navodila za prispevanje](#navodila-za-prispevanje)
+1. [Vizija projekta](#-vizija-projekta)
+2. [Pregled projekta](#-pregled-projekta)
+3. [Tehnologije](#️-tehnologije)
+4. [Projektna struktura](#-projektna-struktura)
+5. [Navodila za namestitev](#-navodila-za-namestitev)
+6. [Zagon aplikacije](#️-zagon-aplikacije)
+7. [Dokumentacija za razvijalce](#-dokumentacija-za-razvijalce)
+8. [Standardi kodiranja](#-standardi-kodiranja)
+9. [API Endpoints](#-api-endpoints)
+10. [Navodila za prispevanje](#-navodila-za-prispevanje)
 
 ---
 
