@@ -924,10 +924,15 @@ npm install
 
 ---
 
+## Use case diagarm
+
+<img width="1005" height="599" alt="Screenshot 2025-11-16 at 16 42 45" src="https://github.com/user-attachments/assets/2589b6aa-7b8e-44fd-a809-771615fdc399" />
+
+---
+
 ## 📄 Licenca
 
 Ta projekt je narejen za učne namene kot del šolskega projekta.
-
 
 ---
 
