@@ -12,10 +12,9 @@ Celostna aplikacija za upravljanje opravil (todos) z Java Spring Boot backend-om
 4. [Projektna struktura](#-projektna-struktura)
 5. [Navodila za namestitev](#-navodila-za-namestitev)
 6. [Zagon aplikacije](#️-zagon-aplikacije)
-7. [Dokumentacija za razvijalce](#-dokumentacija-za-razvijalce)
-8. [Standardi kodiranja](#-standardi-kodiranja)
-9. [API Endpoints](#-api-endpoints)
-10. [Navodila za prispevanje](#-navodila-za-prispevanje)
+7. [Standardi kodiranja](#-standardi-kodiranja)
+8. [Navodila za prispevanje](#-navodila-za-prispevanje)
+9. [Besednjak](#-besednjak)
 
 ---
 
@@ -317,22 +316,6 @@ Frontend bo dosegljiv na: **http://localhost:3000**
 - Odpre se brskalnik na http://localhost:3000
 - Vidite landing page aplikacije
 
----
-
-### 3. Uporaba aplikacije
-
-1. **Registracija**: Kliknite "Login" → "Don't have an account? Register"
-2. **Vnos podatkov**: Username, Email, Password
-3. **Registracija**: Kliknite "Register"
-4. **Avtomatska prijava**: Ste avtomatsko prijavljeni
-5. **Ustvarjanje TODO**: Kliknite "New Todo" → Vnos Title in Description
-6. **Seznam TODO**: Vidite vse svoje TODO-je
-7. **Urejanje**: Kliknite "Edit" na TODO-ju
-8. **Brisanje**: Kliknite "Delete" (potrdite)
-9. **Odjava**: Kliknite "Logout" v navigaciji
-
----
-
 ## 👨‍💻 Dokumentacija za razvijalce
 
 ### Arhitektura
@@ -364,93 +347,6 @@ App.js
 │       │   ├── TodoList
 │       │   └── TodoForm
 │       └── RegisterForm
-```
-
----
-
-### State Management
-
-**Global State (Context API):**
-- `UserContext.js` - trenutni uporabnik, prijava/odjava
-- Dostopen iz katerekoli komponente z `useUser()` hook-om
-
-**Local State (useState):**
-- Vsaka komponenta upravlja svoj lokalni state (forme, loading, errors)
-
-**Persistence:**
-- `localStorage` - shrani trenutnega uporabnika (session persistence)
-
----
-
-### API Komunikacija
-
-**Axios Instance (`src/services/api.js`):**
-```javascript
-const api = axios.create({
-  baseURL: process.env.REACT_APP_BASE_URL,  // http://localhost:8080/api/v1
-  timeout: 30000,
-  headers: {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-  },
-});
-```
-
-**Service Layer:**
-- `auth.js` - Prijava, registracija, localStorage management
-- `todos.js` - CRUD operacije za TODO-je
-- `users.js` - CRUD operacije za uporabnike
-
----
-
-### Backend - Spring Boot Layers
-
-#### 1. **Controller Layer** (REST API)
-- `AuthController.java` - `/api/v1/auth/*` endpoints
-- `TodoController.java` - `/api/v1/todos/*` endpoints
-- `UserController.java` - `/api/v1/users/*` endpoints
-
-#### 2. **Service Layer** (Business Logic)
-- Validacija podatkov
-- Povezovanje med entitetami
-- Error handling
-
-#### 3. **Repository Layer** (Data Access)
-- JPA Repositories za komunikacijo z bazo
-- Custom query methods
-
-#### 4. **Model Layer** (Entities)
-- `User.java` - JPA entiteta za uporabnike
-- `Todo.java` - JPA entiteta za TODO-je
-
----
-
-### Podatkovni tok (Request Flow)
-
-**Primer: Ustvarjanje TODO-ja**
-
-```
-1. User klikne "Save" v TodoForm
-   ↓
-2. handleSubmit() v TodoForm.js
-   ↓
-3. createTodo(userId, {title, description}) v todos.js
-   ↓
-4. axios.post('/todos?userId=1', payload)
-   ↓
-5. POST http://localhost:8080/api/v1/todos?userId=1
-   ↓
-6. TodoController.createTodo(@RequestParam userId, @RequestBody todo)
-   ↓
-7. todoService.createTodo(userId, todo)
-   ↓
-8. todoRepository.save(todo)
-   ↓
-9. MySQL INSERT INTO todos ...
-   ↓
-10. Response: Created Todo JSON
-   ↓
-11. Frontend: navigate('/todos')
 ```
 
 ---
@@ -576,204 +472,6 @@ export default function Component({ title, onSubmit, isLoading }) {
 }
 ```
 
-#### Responsive:
-```css
-@media (max-width: 768px) {
-  .component {
-    /* Mobile styles */
-  }
-}
-```
-
----
-
-## 🔌 API Endpoints
-
-### Authentication (`/api/v1/auth`)
-
-#### POST `/auth/register`
-**Opis**: Registracija novega uporabnika
-
-**Request Body**:
-```json
-{
-  "username": "john",
-  "email": "john@example.com",
-  "password": "password123"
-}
-```
-
-**Response** (201 Created):
-```json
-{
-  "id": 1,
-  "username": "john",
-  "email": "john@example.com"
-}
-```
-
-**Errors**:
-- `400 Bad Request` - Username/Email already taken
-
----
-
-#### POST `/auth/login`
-**Opis**: Prijava uporabnika
-
-**Request Body**:
-```json
-{
-  "username": "john",
-  "password": "password123"
-}
-```
-
-**Response** (200 OK):
-```json
-{
-  "id": 1,
-  "username": "john",
-  "email": "john@example.com"
-}
-```
-
-**Errors**:
-- `400 Bad Request` - Invalid username or password
-
----
-
-### Users (`/api/v1/users`)
-
-#### GET `/users`
-**Opis**: Pridobi vse uporabnike
-
-**Response** (200 OK):
-```json
-[
-  {
-    "id": 1,
-    "username": "john",
-    "email": "john@example.com"
-  }
-]
-```
-
-#### GET `/users/{id}`
-**Opis**: Pridobi specifičnega uporabnika
-
-**Response** (200 OK):
-```json
-{
-  "id": 1,
-  "username": "john",
-  "email": "john@example.com"
-}
-```
-
-#### POST `/users`
-**Opis**: Ustvari novega uporabnika
-
-#### PUT `/users/{id}`
-**Opis**: Posodobi uporabnika
-
-#### DELETE `/users/{id}`
-**Opis**: Izbriši uporabnika
-
----
-
-### Todos (`/api/v1/todos`)
-
-#### GET `/todos?userId={userId}`
-**Opis**: Pridobi vse TODO-je za specifičnega uporabnika
-
-**Query Parameters**:
-- `userId` (required): ID uporabnika
-
-**Response** (200 OK):
-```json
-[
-  {
-    "id": 1,
-    "title": "Buy groceries",
-    "description": "Milk, bread, eggs",
-    "userId": 1
-  }
-]
-```
-
----
-
-#### GET `/todos/{id}`
-**Opis**: Pridobi specifični TODO
-
-**Response** (200 OK):
-```json
-{
-  "id": 1,
-  "title": "Buy groceries",
-  "description": "Milk, bread, eggs",
-  "userId": 1
-}
-```
-
----
-
-#### POST `/todos?userId={userId}`
-**Opis**: Ustvari nov TODO za uporabnika
-
-**Query Parameters**:
-- `userId` (required): ID uporabnika
-
-**Request Body**:
-```json
-{
-  "title": "Buy groceries",
-  "description": "Milk, bread, eggs"
-}
-```
-
-**Response** (201 Created):
-```json
-{
-  "id": 1,
-  "title": "Buy groceries",
-  "description": "Milk, bread, eggs",
-  "userId": 1
-}
-```
-
----
-
-#### PUT `/todos/{id}`
-**Opis**: Posodobi obstoječi TODO
-
-**Request Body**:
-```json
-{
-  "title": "Buy groceries (updated)",
-  "description": "Milk, bread, eggs, cheese"
-}
-```
-
-**Response** (200 OK):
-```json
-{
-  "id": 1,
-  "title": "Buy groceries (updated)",
-  "description": "Milk, bread, eggs, cheese",
-  "userId": 1
-}
-```
-
----
-
-#### DELETE `/todos/{id}`
-**Opis**: Izbriši TODO
-
-**Response** (204 No Content)
-
----
-
 ## 🤝 Navodila za prispevanje
 
 ### 1. Fork & Clone
@@ -787,36 +485,25 @@ cd To-Do
 
 ---
 
-### 2. Ustvarite novo vejo (branch)
+### 2. Delo na main
 
-```bash
-git checkout -b feature/opis-spremembe
-```
-
-**Branch naming conventions**:
-- `feature/ime-funkcionalnosti` - Nova funkcionalnost
-- `bugfix/ime-napake` - Popravek napake
-- `hotfix/kritična-napaka` - Nujna popravka
-- `refactor/kaj-refaktoriraš` - Refaktorizacija kode
+V tem projektu uporabljamo trunk-based development, zato spremembe delamo neposredno na main
 
 ---
 
-### 3. Razvojni cikel
+### 3. Naredite spremembe
 
 #### Backend spremembe:
 ```bash
 cd backend
-# Naredi spremembe v Java kodi
-mvn clean install    # Preveri, da se builda
-mvn test            # Zaženi teste (če obstajajo)
+mvn clean install
 ```
 
 #### Frontend spremembe:
 ```bash
 cd frontend
-# Naredi spremembe v React kodi
-npm start           # Preveri v brskalniku
-npm run build       # Preveri, da se builda
+npm start
+npm run build
 ```
 
 ---
@@ -840,7 +527,7 @@ git commit -m "tip: kratek opis spremembe"
 ### 5. Push & Pull Request
 
 ```bash
-git push origin feature/opis-spremembe
+git push origin main
 ```
 
 Nato na GitHubu:
@@ -848,123 +535,225 @@ Nato na GitHubu:
 2. Opišite spremembe
 3. Dodate screenshots (če je UI sprememba)
 4. Počakate na code review
-
 ---
 
-### Code Review Checklist
 
-**Backend:**
-- [ ] Koda se builda brez napak
-- [ ] Vsi testi so zeleni
-- [ ] API endpoints so dokumentirani
-- [ ] Error handling je implementiran
-- [ ] CORS je pravilno nastavljen
-
-**Frontend:**
-- [ ] Koda se builda brez napak
-- [ ] Ni console.log() v produkcijski kodi
-- [ ] Komponente so pravilno imenovane
-- [ ] CSS je organiziran
-- [ ] Responsive design (mobile friendly)
-- [ ] Error handling (user-friendly sporočila)
-
-**Skupno:**
-- [ ] README je posodobljen (če je potrebno)
-- [ ] Commit sporočila so jasna
-- [ ] Branch ime sledi konvencijam
-
----
-
-## 🐛 Debugging
-
-### Backend Issues
-
-**Problem**: Backend ne steče
-```bash
-# Preveri Java verzijo
-java --version  # Mora biti 25
-
-# Preveri Maven
-mvn --version
-
-# Preveri MySQL
-mysql -u root -p
-SHOW DATABASES;
-```
-
-**Problem**: Database connection error
-- Preveri `application.properties`
-- Preveri MySQL credentials
-- Preveri, da MySQL server teče
-
----
-
-### Frontend Issues
-
-**Problem**: Frontend ne steče
-```bash
-# Preveri Node verzijo
-node --version  # Mora biti v22.21.0
-
-# Počisti cache
-rm -rf node_modules package-lock.json
-npm install
-```
-
-**Problem**: API calls fail (CORS error)
-- Preveri `REACT_APP_BASE_URL` v `.env`
-- Preveri, da backend CORS dovoljuje `http://localhost:3000`
-
----
-
-### Common Errors
-
-**Error**: "Cannot update component while rendering"
-- **Vzrok**: Kličete state setter v render metodi
-- **Fix**: Premaknite v event handler ali useEffect
-
-**Error**: "401 Unauthorized"
-- **Vzrok**: Uporabnik ni prijavljen
-- **Fix**: Preverite, da je user v localStorage
-
-**Error**: "400 Bad Request" pri registraciji
-- **Vzrok**: Username/Email že obstaja
-- **Fix**: Uporabite drugo ime/email
-
----
-
-## 📚 Dodatni viri
-
-### React
-- [React Docs](https://react.dev/)
-- [React Router](https://reactrouter.com/)
-- [Axios Docs](https://axios-http.com/)
-
-### Spring Boot
-- [Spring Boot Docs](https://spring.io/projects/spring-boot)
-- [Spring Data JPA](https://spring.io/projects/spring-data-jpa)
-
-### MySQL
-- [MySQL Documentation](https://dev.mysql.com/doc/)
-
----
-
-## Use case diagarm
+## Use case diagram
 
 <img width="1005" height="599" alt="Screenshot 2025-11-16 at 16 42 45" src="https://github.com/user-attachments/assets/2589b6aa-7b8e-44fd-a809-771615fdc399" />
 
+## Besednjak
+Spodaj so razloženi ključni pojmi, ki se pojavljajo v projektu Todo CRUD aplikacije
 ---
 
-## 📄 Licenca
+📚 Aplikacijski pojmi
+User (Uporabnik)
 
-Ta projekt je narejen za učne namene kot del šolskega projekta.
+Oseba, ki se registrira, prijavi in upravlja s svojimi todos.
 
----
+Todo (Opravilo)
 
-## 🎉 Zahvala
+Naloga, ki si jo uporabnik nastavi. Vsebuje:
 
-Hvala vsem, ki ste prispevali k razvoju tega projekta!
+  Naslov – kratek povzetek opravila
+  
+  Opis – podrobnejši opis naloge
+  
+  Datum ustvarjanja – kdaj je bilo opravilo dodano
+  
+  Datum zadnje posodobitve – kdaj je bilo nazadnje spremenjeno
 
----
+  Rok (due date) – do kdaj naj bo naloga opravljena
+  
+  Status – npr. pending, in progress, completed
+  
+  Prioriteta – npr. low, medium, high
+  
+  Kategorija – npr. šola, služba, osebno
+  
+  Oznake (tags) – dodatno označevanje (npr. "fitness", "urgent")
+  
+  Ali je naloga pomembna (flag/starred) – označeno pomembno opravilo
+  
+  Opombe – dodatne informacije, ki jih uporabnik dopiše
+
+  Ali je naloga zaključena (boolean) – hitri indikator stanja
+
+Login / Logout
+
+Postopek prijave in odjave iz aplikacije.
+
+Todo List
+
+Seznam vseh opravil, ki pripadajo določenemu uporabniku.
+
+Filter / Sort
+
+Možnost filtriranja todo-jev (npr. po statusu, prioritete) ali razvrščanja.
+
+🧩 Splošni programski pojmi
+API (Application Programming Interface)
+
+Vmesnik, ki omogoča komunikacijo med dvema programskima komponentama (npr. frontend ↔ backend).
+
+Arhitektura
+
+Struktura in organizacija sistema, npr. razdelitev na frontend, backend in podatkovni sloj.
+
+Avtentikacija (Authentication)
+
+Postopek, kjer sistem preveri identiteto uporabnika (npr. prijava).
+
+Avtorizacija (Authorization)
+
+Določanje, ali ima uporabnik dovoljenje za določeno dejanje (npr. urejanje samo svojih todo-jev).
+
+Bug (Napaka)
+
+Nepravilno delovanje sistema zaradi napačne kode ali logike.
+
+Endpoint
+
+URL naslov na backendu, ki sprejme HTTP zahtevo (npr. GET /api/v1/todos).
+
+Feature (Funkcionalnost)
+
+Nova sposobnost ali izboljšava aplikacije.
+
+Refaktoring (Refactoring)
+
+Preoblikovanje kode za večjo berljivost ali učinkovitost brez spremembe funkcionalnosti.
+
+🖥️ Frontend izrazi (React)
+Component (Komponenta)
+
+Ponovno uporabna gradbena enota UI-ja v Reactu (npr. TodoList, LoginForm).
+
+User Session (Uporabniška seja)
+
+Čas med prijavo in odjavo uporabnika; predstavlja trenutno stanje njegove prijave.
+
+Props
+
+Vrednosti, ki jih komponenta prejme od starševske komponente.
+
+State (Stanje)
+
+Podatki, ki jih komponenta hrani in jih lahko spreminja med delovanjem.
+
+Hook
+
+Posebna funkcija (npr. useState, useEffect), ki React komponentam omogoča uporabo logike.
+
+Routing
+
+Sistem navigacije med stranmi v aplikaciji (React Router DOM).
+
+HTTP Request (zahteva)
+
+Klic z brskalnika do backend-a (GET, POST, PUT, DELETE).
+
+SPA (Single Page Application)
+
+Spletna aplikacija, ki deluje na eni HTML strani in dinamično posodablja UI brez reload-a.
+
+⚙️ Backend izrazi (Java / Spring Boot)
+Controller
+
+Razred, ki sprejema HTTP zahteve in vrača odgovore (REST API).
+
+Service (Storitev)
+
+Vrsta razreda, ki vsebuje poslovno logiko aplikacije.
+
+Repository
+
+Razred, ki skrbi za delo z bazo podatkov (JPA).
+
+Entity
+
+Razred, ki predstavlja tabelo v bazi podatkov (User, Todo).
+
+DTO (Data Transfer Object)
+
+Objekt za prenos podatkov med backend sloji ali do frontenda.
+
+JPA (Java Persistence API)
+
+Specifikacija za upravljanje entitet in interakcijo z bazo podatkov.
+
+Hibernate
+
+Implementacija JPA; skrbi za povezovanje Java objektov z bazo.
+
+REST API
+
+Arhitekturni slog za komunikacijo med sistemi preko HTTP metod.
+
+Dependency Injection (DI)
+
+Vzorec, ki omogoča avtomatsko vbrizgavanje odvisnosti (npr. @Autowired).
+
+Exception Handling
+
+Mehanizem, ki obravnava napake in vrača primerne HTTP statuse.
+
+🗄️ Baza podatkov (MySQL)
+
+Relacijska baza
+
+Baza, ki podatke organizira v povezane tabele.
+
+Primary Key (PK)
+
+Unikatni identifikator v tabeli (id).
+
+Foreign Key (FK)
+
+Referenca na drug zapis v drugi tabeli (user_id v todos).
+
+Migration
+
+Postopek spremembe strukture baze (v tem projektu izvaja Hibernate).
+
+DDL (Data Definition Language)
+
+Ukazi za ustvarjanje ali spreminjanje tabel (CREATE TABLE, ALTER TABLE).
+
+
+📦 Git terminologija
+Repository (Repo)
+
+Osrednje skladišče kode (GitHub projekt).
+
+Commit
+
+Shranjena sprememba v git zgodovini.
+
+Branch (Veja)
+
+Ločena linija razvoja; v tem projektu delamo večinoma na main.
+
+Pull Request (PR)
+
+Zahteva za združitev sprememb iz tvoje kode v glavno vejo.
+
+Merge
+
+Združevanje dveh vej.
+
+Clone
+
+Prenos repozitorija na lokalni računalnik.
+
+Push
+
+Pošiljanje lokalnih sprememb na GitHub.
+
+Trunk-Based Development
+
+Metodologija, kjer večina dela poteka neposredno na glavni veji (main).
+
 
 **Zadnja posodobitev**: November 2025
+
