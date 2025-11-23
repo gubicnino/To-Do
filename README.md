@@ -539,8 +539,10 @@ Nato na GitHubu:
 
 
 ## Use case diagram
+Posodobljen UCD 
 
-<img width="1005" height="599" alt="Screenshot 2025-11-16 at 16 42 45" src="https://github.com/user-attachments/assets/2589b6aa-7b8e-44fd-a809-771615fdc399" />
+<img width="1002" height="666" alt="UCD" src="https://github.com/user-attachments/assets/7d2780be-8474-4797-8e37-f62df0410a89" />
+
 
 ## Besednjak
 Spodaj so razloženi ključni pojmi, ki se pojavljajo v projektu Todo CRUD aplikacije
@@ -753,6 +755,90 @@ Pošiljanje lokalnih sprememb na GitHub.
 Trunk-Based Development
 
 Metodologija, kjer večina dela poteka neposredno na glavni veji (main).
+
+
+## Podroben opis funkcionalnosti
+ADMIN
+
+Primer uporabe: Dodajanje uporabnikov                                                           ID: 1
+
+Cilj: Admin doda v sistem dodati novega uporabnika
+
+Akterji: Admin
+
+Predpogoji: Admin mora biti prijavljen
+
+Stanje sistema po PU: Sistem ima dodan nov uporabniški račun
+
+Scenarij:
+1. Admin izbere možnost Dodajanje uporabnikov.
+2. Sistem prikaže obrazec za nov račun.
+3. Admin vnese podatke (ime, e-pošta, geslo, vloga …).
+4. Admin potrdi dodajanje.
+5. Sistem ustvari novega uporabnika in ga shrani v bazo.
+6. Sistem vrne potrditev uspešnega dodajanja.
+
+Alternativni tokovi: -Admin vnese napačne ali nepopolne podatke ---> sistem sporoci napako in zahteva, da se popravi
+		     -Admin prekine dodajanje
+
+Izjeme: -Uporabnik z tem emailom že obstaja ---> izpiše se "Uporabnik z tem emailom že obstaja"
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ADMIN
+
+Primer uporabe: Brisanje uporabnikov                                                           ID: 2
+
+Cilj: Admin izbriše uporabnika iz sistema
+
+Akterji: Admin
+
+Predpogoji: -Admin mora biti prijavljen
+	    -Uporabnik mora obstajati v bazi
+
+Stanje sistema po PU: Izbran uporabnik je odstranjen iz baze
+
+Scenarij:
+1. Admin odpre seznam uporabnikov.
+2. Admin izbere uporabnika, ki ga želi izbrisati.
+3. Admin klikne Izbriši uporabnika.
+4. Sistem zahteva potrditev brisanja.
+5. Admin potrdi.
+6. Sistem izbriše uporabnika in prikaže obvestilo o uspehu.
+
+Alternativni tokovi: -Admin prekliče potrditev ---> uporabnik ostane v sistemu
+
+Izjeme: -Uporabnik ne obstaja več ---> sistem prikaže napako
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ADMIN
+
+Primer uporabe: Urejanje uporabnikov                                                        ID: 3
+
+Cilj: Admin posodobi podatke uporabnika
+
+Akterji: Admin
+
+Predpogoji: -Admin mora biti prijavljen
+	    -Uporabnik, ki ga admin ureja mora obstajati v bazi
+
+Stanje sistema po PU: Posodobljeni podatki so shranjeni
+
+Scenarij:
+1. Admin odpre seznam uporabnikov (Pregled uporabnikov).
+2. Admin izbere možnost Urejanje uporabnikov.
+3. Sistem prikaže obrazec s trenutnimi podatki uporabnika.
+4. Admin posodobi želene informacije.
+5. Admin potrdi spremembe.
+6. Sistem shrani posodobljene podatke.
+7. Sistem posodobi pogled v Pregled uporabnikov.
+
+Alternativni tokovi: -Admin ne vnese pravilnih podatkov ---> sistem zahteva popravek
+		     -Admin prekine urejanje ---> spremebe se ne shranijo
+
+Izjeme: -Uporabnik ne obstaja več ---> sistem prikaže napako
+	-Spremeba povzroči nek konflikt, kot je npr. če ima nek uporabnik že ta email, potem vrne napako
+  
+  --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 **Zadnja posodobitev**: November 2025
