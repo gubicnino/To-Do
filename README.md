@@ -612,7 +612,7 @@ Določanje, ali ima uporabnik dovoljenje za določeno dejanje (npr. urejanje sam
 
 Bug (Napaka)
 
-Nepravilno delovanje sistema zaradi napačne kode ali logike.
+Nepravilno delovanje sistema zaradi napašne kode ali logike.
 
 Endpoint
 
@@ -842,4 +842,93 @@ Izjeme: -Uporabnik ne obstaja več ---> sistem prikaže napako
 
 
 **Zadnja posodobitev**: November 2025
+  
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ADMIN / UPORABNIK
+
+Primer uporabe: Dodajanje todoja                                                           ID: 4
+
+Cilj: Registriran uporabnik (ali admin) doda nov todo v svoj seznam
+
+Akterji: Uporabnik, Admin
+
+Predpogoji:
+- Uporabnik mora biti prijavljen.
+
+Stanje sistema po PU: Nov todo je shranjen v bazi in se prikaže v uporabnikovem seznamu.
+
+Scenarij:
+1. Uporabnik odpre stran za dodajanje todojev in klikne na gumb "Dodaj todo".
+2. Sistem prikaže prazen obrazec z obveznimi polji (npr. naslov, opis, rok).
+3. Uporabnik vnese podatke ter klikne "Dodaj".
+4. Prikaže se potrdilo o uspehu.
+5. Novi todo se pokaže 
+
+Alternativni tokovi:
+- Uporabnik ne vnese obveznih podatkov → sistem prikaže napako in zahteva popravek.
+- Uporabnik prekine dodajanje → obrazec se zapre, spremembe se ne shranijo.
+
+Izjeme:
+- Backend vrne napako (npr. DB napaka) → frontend prikaže ustrezno sporočilo.
+- Konflikt validacije (npr. prepovedani znaki ali predolgi podatki) → backend vrne napako s pojasnilom.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ADMIN / UPORABNIK
+
+Primer uporabe: Brisanje todoja                                                           ID: 5
+
+Cilj: Uporabnik izbriše obstoječ todo iz svojega seznama
+
+Akterji: Uporabnik, Admin
+
+Predpogoji:
+- Uporabnik mora biti prijavljen.
+- Todo, ki ga briše, mora obstajati in pripadati uporabniku (razen če je admin).
+
+Stanje sistema po PU: Izbrani todo je odstranjen iz baze in ni več viden v seznamu.
+
+Scenarij:
+1. Uporabnik odpre seznam todojev in klikne gumb/ikono "Izbriši" pri želenem todoju.
+2. Sistem prikaže potrdilo za potrditev.
+3. Uporabnik potrdi brisanje.
+4. Posodobbi se uporabnikov seznam z todoji.
+
+Alternativni tokovi:
+- Uporabnik prekliče potrditev → brisanje ni izvedeno.
+- Uporabnik nima dovoljenja → sistem prikaže sporočilo o nedovoljenem ukrepu.
+
+Izjeme:
+- Todo ne obstaja (že izbrisan/odstranjen) → backend vrne napako, frontend prikaže obvestilo.
+- Napaka pri brisanju (npr. DB napaka) → sistem ne izvede spremembe in obvesti uporabnika.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ADMIN / UPORABNIK
+
+Primer uporabe: Potrditev brisanja todojev                ID: 6
+
+Cilj: Uporabnik pridobi potrdilo da je uspesno izbrisal todo
+
+Akterji: Uporabnik, Admin
+
+Predpogoji:
+- Uporabnik mora biti prijavljen.
+- Izbrani todoji obstajajo in pripadajo uporabniku.
+
+Stanje sistema po PU: Uporabnik prejme povratno informacijo.
+
+Scenarij:
+1. Po brisanju todoja uporabnik prejme obvestilo o uspešnosti
+2. Uporabnik klikne gumb za zaprtje obvestila
+3. Obvestilo se zapre
+
+Alternativni tokovi:
+- DUporabnik ne klikne gumba za zaprje -> obvestilo se samodejno zapre čez minuto
+
+Izjeme:
+- Pride do napake pri ustvrajanju obvestila
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
