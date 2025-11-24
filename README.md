@@ -541,7 +541,7 @@ Nato na GitHubu:
 ## Use case diagram
 Posodobljen UCD 
 
-<img width="1002" height="666" alt="UCD" src="https://github.com/user-attachments/assets/7d2780be-8474-4797-8e37-f62df0410a89" />
+<img width="898" height="581" alt="Screenshot 2025-11-24 at 12 08 38" src="https://github.com/user-attachments/assets/73037bd4-bf1f-42b7-a347-3d81223ae19a" />
 
 
 ## Besednjak
