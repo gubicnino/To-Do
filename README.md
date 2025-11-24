@@ -932,3 +932,156 @@ Izjeme:
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+ADMIN / UPORABNIK
+
+Primer uporabe: Spreminjanje Todojev                ID: 7
+
+Cilj: Uporabnik posodobi obstoječ todo (spremeni naslov, opis ali druge podatke)
+
+Akterji: Uporabnik, Admin
+
+Predpogoji:
+- Uporabnik mora biti prijavljen.
+- Todo, ki ga ureja, mora obstajati in pripadati uporabniku.
+
+Stanje sistema po PU: Posodobljeni podatki todoja so shranjeni v bazi.
+
+Scenarij:
+1. Uporabnik odpre seznam todojev.
+2. Uporabnik klikne na todo, ki ga želi urediti.
+3. Sistem prikaže obrazec s trenutnimi podatki todoja.
+4. Uporabnik spremeni želene informacije (naslov, opis, rok).
+5. Uporabnik potrdi spremembe.
+6. Sistem validira vnesene podatke.
+7. Sistem shrani posodobljene podatke.
+8. Sistem osveži prikaz in prikaže posodobljen todo.
+9. Sistem prikaže obvestilo o uspešni posodobitvi.
+
+Alternativni tokovi:
+- Uporabnik ne vnese obveznih podatkov → sistem prikaže napako in zahteva popravek.
+- Uporabnik prekine urejanje → spremembe se ne shranijo.
+
+Izjeme:
+- Todo ne obstaja več → sistem prikaže napako.
+- Napaka pri shranjevanju → sistem ne posodobi todoja in prikaže sporočilo o napaki.
+- Uporabnik nima dovoljenja za urejanje → sistem zavrne akcijo.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ADMIN / UPORABNIK
+
+Primer uporabe: Pregled Todojev                ID: 8
+
+Cilj: Uporabnik prikaže seznam vseh svojih todojev
+
+Akterji: Uporabnik, Admin
+
+Predpogoji:
+- Uporabnik mora biti prijavljen.
+
+Stanje sistema po PU: Stanje sistema se ne spremeni, prikazan je samo seznam todojev.
+
+Scenarij:
+1. Uporabnik odpre glavno stran aplikacije ali klikne na "Moji Todoji".
+2. Sistem naloži vse todoje, ki pripadajo prijavljenemu uporabniku.
+3. Sistem prikaže seznam todojev (naslov, opis, rok, status).
+4. Uporabnik lahko pregleda vse svoje todoje.
+
+Alternativni tokovi:
+- Uporabnik nima nobenega todoja → sistem prikaže sporočilo "Nimate še nobenega todoja. Dodajte prvega!"
+
+Izjeme:
+- Napaka pri nalaganju podatkov → sistem prikaže sporočilo o napaki in omogoči osvežitev.
+- Povezava z bazo ni na voljo → sistem prikaže obvestilo o težavi s povezavo.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ADMIN / UPORABNIK
+
+Primer uporabe: Prenos Todojev v PDF                ID: 9
+
+Cilj: Uporabnik izvozi svoje todoje v PDF dokument za tiskanje ali shranjevanje
+
+Akterji: Uporabnik, Admin
+
+Predpogoji:
+- Uporabnik mora biti prijavljen.
+- Uporabnik mora imeti vsaj en todo.
+
+Stanje sistema po PU: Stanje sistema se ne spremeni, ustvarjen je PDF dokument.
+
+Scenarij:
+1. Uporabnik odpre seznam todojev.
+2. Uporabnik klikne na gumb "Izvozi v PDF" ali "Natisni".
+3. Sistem zbere vse uporabnikove todoje.
+4. Sistem generira PDF dokument z oblikovanim seznamom todojev.
+5. Sistem sproži prenos PDF datoteke.
+6. Uporabnik shrani ali odpre PDF dokument.
+
+Alternativni tokovi:
+- Uporabnik nima todojev → sistem prikaže obvestilo "Nimate todojev za izvoz".
+- Uporabnik prekliče prenos → PDF se ne ustvari.
+
+Izjeme:
+- Napaka pri generiranju PDF → sistem prikaže sporočilo o napaki.
+- Brskalnik ne podpira prenosa → sistem ponudi alternativno možnost (npr. odpiranje v novem zavihku).
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ADMIN
+
+Primer uporabe: Pregled uporabnikov                ID: 10
+
+Cilj: Admin prikaže seznam vseh registriranih uporabnikov v sistemu
+
+Akterji: Admin
+
+Predpogoji:
+- Admin mora biti prijavljen.
+
+Stanje sistema po PU: Stanje sistema se ne spremeni, prikazan je samo seznam uporabnikov.
+
+Scenarij:
+1. Admin odpre stran za upravljanje uporabnikov.
+2. Sistem naloži vse registrirane uporabnike.
+3. Sistem prikaže seznam uporabnikov (ime, email, vloga, datum registracije).
+4. Admin lahko pregleda vse uporabnike.
+
+Alternativni tokovi:
+- V sistemu ni nobenega uporabnika → sistem prikaže sporočilo "Ni registriranih uporabnikov".
+
+Izjeme:
+- Napaka pri nalaganju podatkov → sistem prikaže sporočilo o napaki in omogoči osvežitev.
+- Admin nima ustreznih pravic → sistem zavrne dostop.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ADMIN
+
+Primer uporabe: Potrditev brisanja uporabnika                ID: 11
+
+Cilj: Admin potrdi brisanje izbranega uporabnika za preprečitev neželenih brisanj
+
+Akterji: Admin
+
+Predpogoji:
+- Admin mora biti prijavljen.
+- Admin mora izbrati uporabnika za brisanje.
+
+Stanje sistema po PU: Prikazan je potrditveni dialog, sistem še ni spremenil.
+
+Scenarij:
+1. Admin izbere uporabnika in klikne "Izbriši".
+2. Sistem prikaže potrditveno okno z opozorilom.
+3. Sistem prikaže podatke uporabnika (ime, email).
+4. Admin prebere opozorilo in potrdi brisanje.
+5. Sistem izvede brisanje uporabnika (vključi ID: 2).
+
+Alternativni tokovi:
+- Admin prekliče potrditev → uporabnik ni izbrisan, dialog se zapre.
+
+Izjeme:
+- Dialog se ne prikaže → sistem izvede brisanje brez potrditve (napaka).
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
