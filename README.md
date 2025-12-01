@@ -551,7 +551,7 @@ Posodobljen UCD
 
 ## Class Diagram
 
-<!-- tu de slika -->
+<img width="1547" height="967" alt="image" src="https://github.com/user-attachments/assets/701818c8-d2be-47a3-a31d-031eb1aa260c" />
 
 
 ### Opis razrednega diagrama
