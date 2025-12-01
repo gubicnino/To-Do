@@ -16,8 +16,9 @@ Celostna aplikacija za upravljanje opravil (todos) z Java Spring Boot backend-om
 8. [Standardi kodiranja](#-standardi-kodiranja)
 9. [Navodila za prispevanje](#-navodila-za-prispevanje)
 10. [Use case diagram](#use-case-diagram)
-11. [Besednjak](#besednjak)
-12. [Podroben opis funkcionalnosti](#podroben-opis-funkcionalnosti)
+11. [Class diagram](#class-diagram)
+12. [Besednjak](#besednjak)
+13. [Podroben opis funkcionalnosti](#podroben-opis-funkcionalnosti)
 
 ---
 
@@ -546,6 +547,42 @@ Posodobljen UCD
 
 <img width="898" height="581" alt="Screenshot 2025-11-24 at 12 08 38" src="https://github.com/user-attachments/assets/73037bd4-bf1f-42b7-a347-3d81223ae19a" />
 
+---
+
+## Class Diagram
+
+<!-- tu de slika -->
+
+
+### Opis razrednega diagrama
+
+#### **Entity razredi:**
+- **User**: Predstavlja uporabnika aplikacije. Vsebuje osnovne podatke (username, email, password) in seznam Todo-jev, ki pripadajo uporabniku. Implementira Lombok @Data anotacijo za avtomatsko generacijo getterjev/setterjev.
+- **Todo**: Predstavlja opravilo (todo). Vsebuje naslov, opis in referenco na User objekt, ki mu pripada. Uporablja @ManyToOne relacijo z User entiteto.
+
+#### **Repository interfejsi:**
+- **UserRepository**: Razširja CrudRepository in omogoča CRUD operacije nad User entiteto. Vsebuje custom metode za iskanje uporabnika po username-u ali email-u.
+- **TodoRepository**: Razširja CrudRepository in omogoča CRUD operacije nad Todo entiteto. Vsebuje custom metodo za iskanje Todo-jev po userId.
+
+#### **Service razredi:**
+- **UserService**: Vsebuje poslovno logiko za upravljanje uporabnikov. Ključne metode: createUser, updateUser, deleteUser, getUserById. Uporablja UserRepository za dostop do podatkov.
+- **TodoService**: Vsebuje poslovno logiko za upravljanje Todo-jev. Ključne metode: createTodo (preveri obstoj uporabnika), updateTodo, deleteTodo, getTodosByUserId. Uporablja TodoRepository in UserRepository.
+
+#### **Controller razredi:**
+- **UserRestController**: REST API endpoints za upravljanje uporabnikov. Sprejema HTTP zahteve (GET, POST, PUT, DELETE) in vrača JSON odgovore. Uporablja UserService.
+- **TodoRestController**: REST API endpoints za upravljanje Todo-jev. Omogoča CRUD operacije preko HTTP. Uporablja TodoService.
+- **AuthRestController**: REST API endpoints za avtentikacijo (registracija in prijava). Direktno uporablja UserRepository (brez Service sloja).
+
+#### **DTO razredi:**
+- **LoginRequest**: DTO za podatke prijave (username, password).
+- **RegisterRequest**: DTO za podatke registracije (username, email, password).
+- **AuthResponse**: DTO za odgovor po uspešni prijavi/registraciji (id, username, email).
+
+#### **Relacije:**
+- **User ◇→ Todo (1:*)**: Aggregation - en User ima lahko več Todo-jev.
+- **Vse ostale relacije**: Dependency (črtkane puščice) - prikazujejo uporabo razredov.
+
+---
 
 ## Besednjak
 Spodaj so razloženi ključni pojmi, ki se pojavljajo v projektu Todo CRUD aplikacije
