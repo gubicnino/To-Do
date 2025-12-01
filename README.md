@@ -12,9 +12,12 @@ Celostna aplikacija za upravljanje opravil (todos) z Java Spring Boot backend-om
 4. [Projektna struktura](#-projektna-struktura)
 5. [Navodila za namestitev](#-navodila-za-namestitev)
 6. [Zagon aplikacije](#️-zagon-aplikacije)
-7. [Standardi kodiranja](#-standardi-kodiranja)
-8. [Navodila za prispevanje](#-navodila-za-prispevanje)
-9. [Besednjak](#-besednjak)
+7. [Dokumentacija za razvijalce](#-dokumentacija-za-razvijalce)
+8. [Standardi kodiranja](#-standardi-kodiranja)
+9. [Navodila za prispevanje](#-navodila-za-prispevanje)
+10. [Use case diagram](#use-case-diagram)
+11. [Besednjak](#besednjak)
+12. [Podroben opis funkcionalnosti](#podroben-opis-funkcionalnosti)
 
 ---
 
