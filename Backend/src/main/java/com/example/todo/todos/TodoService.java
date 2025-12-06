@@ -33,6 +33,11 @@ public class TodoService {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new RuntimeException("User not found"));
         
+        // Set defaults if not provided
+        if (todo.getPriority() == null) {
+            todo.setPriority(Todo.Priority.MEDIUM);
+        }
+        
         todo.setUser(user);  // Link todo to user
         return todoRepository.save(todo);
     }
@@ -52,6 +57,9 @@ public class TodoService {
             .map(existingTodo -> {
                 existingTodo.setTitle(updatedTodo.getTitle());
                 existingTodo.setDescription(updatedTodo.getDescription());
+                existingTodo.setCompleted(updatedTodo.isCompleted());
+                existingTodo.setPriority(updatedTodo.getPriority());
+                existingTodo.setDueDate(updatedTodo.getDueDate());
                 return todoRepository.save(existingTodo);
             })
             .orElseThrow(() -> new RuntimeException("Todo not found with id: " + id));
