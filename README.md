@@ -1129,7 +1129,7 @@ Nova Funkcionalnost izvoz posameznega todoja v pdf dokument
 V aplikacijo smo dodali moznost izvoza posamezenega todoja v pdf dokument. Uporabnik lahko klikne na gumb "Spremeni v pdf" in mu potem nalozi pdf datoteko, ta dokument vsebuje kljucne pdoatke o totdoju.
 
 Delovanje
--
+
 1.Ko uporabnik klikne gumb “Spremeni v PDF”, React komponenta:
 2.Ustvari začasni HTML element z vsebino izbranega ToDo-ja (naslov, opis, prioriteta, datum, status).
 3.Posreduje HTML knjižnici html2pdf.js.
@@ -1137,7 +1137,7 @@ Delovanje
 5.Brskalnik avtomatsko prenese PDF datoteko (ime je enako naslovu ToDo-ja).
 
 Kako lahko uporabnik preizkusi funkcionalnost
--
+
 1.Uporabnik se mora najprej prijaviti ali registrirati ter odpreti stran s ToDo seznami.
 2.Na strani My Todos se izpišejo vsa ToDo opravila prijavljenega uporabnika.
 3.Pri vsakem ToDo elementu je prikazan gumb:
