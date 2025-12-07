@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { deleteTodo, getUserTodos, updateTodo } from '../../services/todos';
 import { Link, useNavigate } from 'react-router-dom';
 import './TodoList.css';
 import { useUser } from '../../context/UserContext';
+import html2pdf from"html2pdf.js";
+import {useRef} from "react";
 
 
 export default function TodoList() {
@@ -14,6 +16,7 @@ export default function TodoList() {
   const {currentUser} = useUser();
   const userId = currentUser?.id;
   const navigate = useNavigate();
+  const pdfRef = useRef();
 
   useEffect(() => {
     const load = async () => {
@@ -32,6 +35,27 @@ export default function TodoList() {
       load();
     }
   }, [userId]);  
+
+  const generatePDF = (todo) => {
+    const element = document.createElement("div");
+
+    element.innerHTML = `
+      <h1>TODO: ${todo.title}</h1>
+      <p>Opis: ${todo.description}</p>
+      <p>Prioriteta: ${todo.priority}<p>
+      <p>Stanje: ${todo.completed ? "YES" : "NO"}<p>
+      <p>Datum: ${todo.dueDate} || "Ni datuma"}<p>
+      `;
+
+    const options = {
+      margin: 10,
+    filename: `${todo.title}.pdf`,
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+    
+  html2pdf().from(element).set(options).save();
+
+  };
 
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this todo?')) return;
@@ -192,15 +216,19 @@ export default function TodoList() {
                   )}
                 </div>
 
-                <div className="todo-actions">
-                  <Link to={`/todos/${todo.id}/edit`} className="btn-edit">
+              <div className="todo-actions">
+                <Link to={`/todos/${todo.id}/edit`} className="btn-edit">
                     Edit
-                  </Link>
-                  <button onClick={() => handleDelete(todo.id)} className="btn-delete">
-                    Delete
-                  </button>
-                </div>
+                </Link>
+              <button onClick={() => handleDelete(todo.id)} className="btn-delete">
+                Delete
+              </button>
+              <button onClick={() => generatePDF(todo)} className="btn-pdf">
+                Spremeni v PDF
+              </button>
               </div>
+              </div>
+              
             );
           })}
         </div>
