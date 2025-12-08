@@ -40,21 +40,50 @@ export default function TodoList() {
     const element = document.createElement("div");
 
     element.innerHTML = `
-      <h1>TODO: ${todo.title}</h1>
-      <p>Opis: ${todo.description}</p>
-      <p>Prioriteta: ${todo.priority}<p>
-      <p>Stanje: ${todo.completed ? "YES" : "NO"}<p>
-      <p>Datum: ${todo.dueDate} || "Ni datuma"}<p>
-      `;
+      <h1 style="text-align: center; margin-bottom: 20px;">TODO</h1>
+      <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
+        <h2 style="margin: 0 0 10px 0; color: #333;">${todo.title}</h2>
+        <p style="margin: 5px 0;"><strong>Opis:</strong> ${todo.description || 'Ni opisa'}</p>
+        <p style="margin: 5px 0;"><strong>Prioriteta:</strong> ${todo.priority}</p>
+        <p style="margin: 5px 0;"><strong>Stanje:</strong> ${todo.completed ? '✓ Zaključeno' : '○ Aktivno'}</p>
+        <p style="margin: 5px 0;"><strong>Rok:</strong> ${todo.dueDate ? new Date(todo.dueDate).toLocaleString() : 'Ni določen'}</p>
+      </div>
+    `;
 
     const options = {
       margin: 10,
-    filename: `${todo.title}.pdf`,
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  };
+      filename: `${todo.title}.pdf`,
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
     
-  html2pdf().from(element).set(options).save();
+    html2pdf().from(element).set(options).save();
 
+  };
+
+  const generateAllPDF = () => {
+    const element = document.createElement("div");
+    
+    element.innerHTML = `
+      <h1 style="text-align: center; margin-bottom: 20px;">Moji TODO-ji</h1>
+      <p style="text-align: center; margin-bottom: 30px;">Skupno: ${todos.length} | Aktivni: ${stats.active} | Zaključeni: ${stats.completed}</p>
+      ${sortedTodos.map((todo, index) => `
+        <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
+          <h2 style="margin: 0 0 10px 0; color: #333;">${index + 1}. ${todo.title}</h2>
+          <p style="margin: 5px 0;"><strong>Opis:</strong> ${todo.description || 'Ni opisa'}</p>
+          <p style="margin: 5px 0;"><strong>Prioriteta:</strong> ${todo.priority}</p>
+          <p style="margin: 5px 0;"><strong>Stanje:</strong> ${todo.completed ? '✓ Zaključeno' : '○ Aktivno'}</p>
+          <p style="margin: 5px 0;"><strong>Rok:</strong> ${todo.dueDate ? new Date(todo.dueDate).toLocaleString() : 'Ni določen'}</p>
+        </div>
+      `).join('')}
+    `;
+
+    const options = {
+      margin: 10,
+      filename: `Vsi_TODO-ji_${new Date().toISOString().split('T')[0]}.pdf`,
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    
+    html2pdf().from(element).set(options).save();
   };
 
   const handleDelete = async (id) => {
@@ -136,9 +165,14 @@ export default function TodoList() {
     <div className="todo-wrapper">
       <div className="todo-header">
         <h2>My Todos</h2>
-        <button className="btn-new" onClick={() => navigate('/todos/new')}>
-          + New Todo
-        </button>
+        <div className="header-actions">
+          <button className="btn-pdf-all" onClick={generateAllPDF} disabled={todos.length === 0}>
+            📄 Izvozi vse v PDF
+          </button>
+          <button className="btn-new" onClick={() => navigate('/todos/new')}>
+            + New Todo
+          </button>
+        </div>
       </div>
 
       <div className="todo-stats">
