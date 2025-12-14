@@ -19,6 +19,7 @@ Celostna aplikacija za upravljanje opravil (todos) z Java Spring Boot backend-om
 11. [Class diagram](#class-diagram)
 12. [Besednjak](#besednjak)
 13. [Podroben opis funkcionalnosti](#podroben-opis-funkcionalnosti)
+14. [Testiranje in unit testi](#-testiranje-in-unit-testi) 🆕
 
 ---
 
@@ -1155,3 +1156,105 @@ Kako lahko uporabnik preizkusi funkcionalnost
  5.1generira PDF dokument z vsemi podatki o opravilu,
  
  5.2datoteka se samodejno prenese na uporabnikov računalnik.
+
+---
+
+## 🧪 Testiranje in Unit Testi
+
+### Pregled
+
+Projekt vključuje **celovito testiranje backend funkcionalnosti** z uporabo JUnit 5 in Mockito frameworka.
+
+### Lokacija testov
+
+```
+Backend/
+├── src/
+│   └── test/
+│       └── java/
+│           └── com/example/todo/todos/
+│               └── TodoServicePdfTest.java    # Unit testi za PDF export
+```
+
+### Testiranje mapa
+
+V korenu projekta se nahaja nova mapa **`testiranje/`**, ki vsebuje:
+
+```
+testiranje/
+└── porocilo_testiranja.md    # Podrobno poročilo o testiranju
+```
+
+### Implementirana funkcionalnost - PDF Export (Backend)
+
+Poleg frontend PDF exporta je bila dodana tudi **backend PDF export funkcionalnost** z naslednjimi endpointi:
+
+#### API Endpoints:
+- **`GET /todos/{id}/pdf`** - Izvozi posamezen TODO v PDF
+- **`GET /todos/user/{userId}/pdf`** - Izvozi vse TODOje uporabnika v PDF
+
+#### Uporabljene tehnologije:
+- **iText7** (verzija 7.2.5) - Knjižnica za generiranje PDF dokumentov
+- **JUnit 5** - Testing framework
+- **Mockito** - Mocking framework za unit teste
+
+### Implementirani testi
+
+#### Test 1: Uspešen export posameznega TODOja v PDF ✅
+**Tip:** Pozitivni scenarij  
+**Namen:** Preveri, da se TODO pravilno izvozi v PDF format z vsemi podatki.  
+**Uporabljene anotacije:** `@Test`, `@DisplayName`, `@BeforeEach`
+
+#### Test 2: Napaka pri exportu neobstoječega TODOja ✅
+**Tip:** Negativni scenarij  
+**Namen:** Preveri, da sistem pravilno obravnava napako pri exportu neobstoječega TODOja.  
+**Uporabljene anotacije:** `@Test`, `@DisplayName`
+
+---
+
+### Pokritost testiranja
+
+- ✅ **Pozitivni scenariji** - uspešen export posameznega in vseh TODOjev
+- ✅ **Negativni scenariji** - error handling za neobstoječe TODOje
+- ✅ **Edge cases** - minimalni podatki, prazni seznami
+- ✅ **Code coverage** - ~95% za PDF export metode
+
+### Uporabljene anotacije
+
+- ✅ **Pozitiven scenarij** - uspešen export posameznega TODOja
+- ✅ **Negativen scenarij** - error handling za neobstoječ TODO
+
+### Zagon testov
+
+#### Predpogoji:
+```bash
+cd Backend
+./mvnw clean install
+```
+
+#### Zagon vseh testov:
+```bash
+./mvnw test
+```
+
+#### Zagon samo PDF testov:
+```bash
+./mvnw test -Dtest=TodoServicePdfTest
+```
+
+#### Zagon posameznega testa:
+```bash
+./mvnw test -Dtest=TodoServicePdfTest#testExportSingleTodoToPdf_Success
+```
+
+### Poročilo o testiranju
+
+Podrobno poročilo o testiranju, vključno z:
+- Opisom vseh testov in njihovim namenom
+- Analizo odkritih napak in rešitev
+- Pokritostjo testov
+- Priložnostmi za izboljšave
+
+je na voljo v: **[`testiranje/porocilo_testiranja.md`](testiranje/porocilo_testiranja.md)**
+
+**Zadnja posodobitev:** 14. december 2025
