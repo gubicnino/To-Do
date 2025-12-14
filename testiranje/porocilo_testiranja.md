@@ -78,13 +78,53 @@ Ta test zagotavlja robusten error handling - pomembno je, da aplikacija elegantn
 
 ---
 
+
+Test 3: Uspešno ustvarjanje TODOja
+
+Namen: Preveriti, da se TODO pravilno ustvari, ko uporabnik obstaja.
+Test preverja:
+- da UserRepository vrne obstoječega uporabnika,
+- da metoda createTodo() uspešno ustvari TODO,
+- da se todoRepository.save() pokliče,
+- da ima ustvarjeni TODO pravilno nastavljenega uporabnika.
+
+Pomen: Test potrjuje osnovno funkcionalnost aplikacije – ustvarjanje novih opravil.
+
+Uporabljena anotacija:
+-@Test – označuje testno metodo
+-@DisplayName("Test create todo - success") – berljivo ime testa
+
+Test 4: Napaka pri ustvarjanju TODOja za neobstoječega uporabnika
+
+Namen: Preveriti pravilno obravnavo napake, če userId ne obstaja.
+Test preverja:
+- da UserRepository vrne Optional.empty(),
+- da se sproži RuntimeException,
+- da se todoRepository.save() ne pokliče.
+- Pomen: Zagotavlja robustnost sistema in preprečuje shranjevanje neveljavnih podatkov.
+
+Uporabljena anotacija:
+- @Test – označuje testno metodo
+- @DisplayName("Test create todo - user not found")
+
+Uporabljene anotacije:
+-@Test – označuje testno metodo
+-@DisplayName – bolj berljivo ime testa
+-@Mock – nadomesti odvisnosti (repositories)
+-@InjectMocks – injicira mocke v testni razred
+-@BeforeEach – priprava testnih podatkov
+
+---
+
 ## 6. Analiza uspešnosti testov
 
 ### 6.1 Uspešnost testov. Testi uspešno prehajajo:
 
 ```
 ✅ Test 1: Uspešen export posameznega TODOja v PDF - PASS
-✅ Test 2: Napaka pri exportu neobstoječega TODOja - PASS  
+✅ Test 2: Napaka pri exportu neobstoječega TODOja - PASS
+✅ Test 3: Uspešno ustvarjanje novega TODOja – PASS
+✅ Test 4: Napaka pri ustvarjanju TODOja za neobstoječega uporabnika – PASS
 ```
 ---
 
