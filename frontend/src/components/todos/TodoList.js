@@ -3,8 +3,7 @@ import { deleteTodo, getUserTodos, updateTodo } from '../../services/todos';
 import { Link, useNavigate } from 'react-router-dom';
 import './TodoList.css';
 import { useUser } from '../../context/UserContext';
-import html2pdf from"html2pdf.js";
-import {useRef} from "react";
+import api from '../../services/api';
 
 
 export default function TodoList() {
@@ -16,7 +15,6 @@ export default function TodoList() {
   const {currentUser} = useUser();
   const userId = currentUser?.id;
   const navigate = useNavigate();
-  const pdfRef = useRef();
 
   useEffect(() => {
     const load = async () => {
@@ -36,54 +34,42 @@ export default function TodoList() {
     }
   }, [userId]);  
 
-  const generatePDF = (todo) => {
-    const element = document.createElement("div");
-
-    element.innerHTML = `
-      <h1 style="text-align: center; margin-bottom: 20px;">TODO</h1>
-      <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
-        <h2 style="margin: 0 0 10px 0; color: #333;">${todo.title}</h2>
-        <p style="margin: 5px 0;"><strong>Opis:</strong> ${todo.description || 'Ni opisa'}</p>
-        <p style="margin: 5px 0;"><strong>Prioriteta:</strong> ${todo.priority}</p>
-        <p style="margin: 5px 0;"><strong>Stanje:</strong> ${todo.completed ? '✓ Zaključeno' : '○ Aktivno'}</p>
-        <p style="margin: 5px 0;"><strong>Rok:</strong> ${todo.dueDate ? new Date(todo.dueDate).toLocaleString() : 'Ni določen'}</p>
-      </div>
-    `;
-
-    const options = {
-      margin: 10,
-      filename: `${todo.title}.pdf`,
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-    
-    html2pdf().from(element).set(options).save();
-
+  const generatePDF = async (todoId) => {
+    try {
+      const response = await api.get(`/todos/${todoId}/pdf`, {
+        responseType: 'blob'
+      });
+      
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `todo_${todoId}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      alert('PDF export failed: ' + (err.message || err));
+    }
   };
 
-  const generateAllPDF = () => {
-    const element = document.createElement("div");
-    
-    element.innerHTML = `
-      <h1 style="text-align: center; margin-bottom: 20px;">Moji TODO-ji</h1>
-      <p style="text-align: center; margin-bottom: 30px;">Skupno: ${todos.length} | Aktivni: ${stats.active} | Zaključeni: ${stats.completed}</p>
-      ${sortedTodos.map((todo, index) => `
-        <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
-          <h2 style="margin: 0 0 10px 0; color: #333;">${index + 1}. ${todo.title}</h2>
-          <p style="margin: 5px 0;"><strong>Opis:</strong> ${todo.description || 'Ni opisa'}</p>
-          <p style="margin: 5px 0;"><strong>Prioriteta:</strong> ${todo.priority}</p>
-          <p style="margin: 5px 0;"><strong>Stanje:</strong> ${todo.completed ? '✓ Zaključeno' : '○ Aktivno'}</p>
-          <p style="margin: 5px 0;"><strong>Rok:</strong> ${todo.dueDate ? new Date(todo.dueDate).toLocaleString() : 'Ni določen'}</p>
-        </div>
-      `).join('')}
-    `;
-
-    const options = {
-      margin: 10,
-      filename: `Vsi_TODO-ji_${new Date().toISOString().split('T')[0]}.pdf`,
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-    
-    html2pdf().from(element).set(options).save();
+  const generateAllPDF = async () => {
+    try {
+      const response = await api.get(`/todos/user/${userId}/pdf`, {
+        responseType: 'blob'
+      });
+      
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `vsi_todos_${userId}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      alert('PDF export failed: ' + (err.message || err));
+    }
   };
 
   const handleDelete = async (id) => {
@@ -257,7 +243,7 @@ export default function TodoList() {
               <button onClick={() => handleDelete(todo.id)} className="btn-delete">
                 Delete
               </button>
-              <button onClick={() => generatePDF(todo)} className="btn-pdf">
+              <button onClick={() => generatePDF(todo.id)} className="btn-pdf">
                 Spremeni v PDF
               </button>
               </div>
