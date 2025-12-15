@@ -107,12 +107,48 @@ Uporabljena anotacija:
 - @Test – označuje testno metodo
 - @DisplayName("Test create todo - user not found")
 
+Test 5: Nastavitev default priority na MEDIUM
+
+Namen: Preveriti, da se priority avtomatsko nastavi na MEDIUM, če ni podana.
+Test preverja:
+- da se TODO ustvari brez nastavljene priority (null),
+- da metoda createTodo() nastavi default vrednost MEDIUM,
+- da so ostali podatki pravilno shranjeni.
+
+Pomen: Zagotavlja, da sistem pravilno obvladuje manjkajoče podatke z default vrednostmi.
+
+Uporabljena anotacija:
+- @Test – označuje testno metodo
+- @DisplayName – berljivo ime testa
+
+Test 6: Napaka pri shranjevanju TODO-ja v bazo
+
+Namen: Preveriti pravilno obravnavo napake pri shranjevanju v bazo podatkov.
+Test preverja:
+- da se vrže RuntimeException pri database error,
+- da sporočilo vsebuje pravilen opis napake,
+- da so bili narejeni pravilni klici repozitorijev.
+
+Pomen: Zagotavlja robusten error handling pri database operacijah.
+
+Uporabljena anotacija:
+- @Test – označuje testno metodo
+- @DisplayName – berljivo ime testa
+
 Uporabljene anotacije:
 -@Test – označuje testno metodo
 -@DisplayName – bolj berljivo ime testa
 -@Mock – nadomesti odvisnosti (repositories)
 -@InjectMocks – injicira mocke v testni razred
 -@BeforeEach – priprava testnih podatkov
+
+---
+
+## 4. Člani skupine in odgovornosti
+
+- **Nino Gubič** - Test 5 in Test 6
+- **Jure Matiš** - Test 1 in Test 2
+- **Gabrijel Bratina** - Test 3 in Test 4
 
 ---
 
@@ -125,6 +161,8 @@ Uporabljene anotacije:
 ✅ Test 2: Napaka pri exportu neobstoječega TODOja - PASS
 ✅ Test 3: Uspešno ustvarjanje novega TODOja – PASS
 ✅ Test 4: Napaka pri ustvarjanju TODOja za neobstoječega uporabnika – PASS
+✅ Test 5: Nastavitev default priority na MEDIUM – PASS
+✅ Test 6: Napaka pri shranjevanju TODO-ja v bazo – PASS
 ```
 ---
 
