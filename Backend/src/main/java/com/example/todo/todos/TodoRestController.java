@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @CrossOrigin
@@ -90,5 +91,41 @@ public class TodoRestController {
         return ResponseEntity.ok()
             .headers(headers)
             .body(pdfBytes);
+    }
+    
+    // POST /api/v1/todos/{id}/attachment - Upload attachment for a todo
+    @PostMapping("/{id}/attachment")
+    public ResponseEntity<String> uploadAttachment(
+        @PathVariable Integer id,
+        @RequestParam("file") MultipartFile file) {
+    
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("File is empty");
+        }
+        
+        // Validate file size (5MB max)
+        long maxSize = 5 * 1024 * 1024; // 5MB in bytes
+        if (file.getSize() > maxSize) {
+            return ResponseEntity.badRequest()
+                .body("File size exceeds 5MB limit");
+        }
+        
+        // Validate file type (only PNG, JPG, PDF)
+        String contentType = file.getContentType();
+        if (contentType == null || 
+            (!contentType.equals("image/png") && 
+             !contentType.equals("image/jpeg") && 
+             !contentType.equals("application/pdf"))) {
+            return ResponseEntity.badRequest()
+                .body("Invalid file type. Only PNG, JPG, and PDF files are allowed");
+        }
+        
+        try {
+            String result = todoService.saveAttachment(id, file);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                .body("Failed to upload attachment: " + e.getMessage());
+        }
     }
 }

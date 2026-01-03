@@ -29,3 +29,5 @@ backend/bin/
 # OS
 .DS_Store
 Thumbs.db
+Backend/src/main/resources/application.properties
+Backend/src/main/resources/application.properties

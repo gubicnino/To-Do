@@ -1,12 +1,18 @@
 package com.example.todo.todos;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.todo.user.User;
 import com.example.todo.user.UserRepository;
@@ -205,5 +211,28 @@ public class TodoService {
         }
         
         return baos.toByteArray();
+    }
+    // Save attachment for a todo
+    public String saveAttachment(Integer todoId, MultipartFile file) throws IOException {
+        // Check if todo exists
+        Todo todo = todoRepository.findById(todoId)
+            .orElseThrow(() -> new RuntimeException("Todo not found with id: " + todoId));
+        
+        // Create uploads directory if it doesn't exist
+        String uploadDir = "priloge/" + todoId;
+        Path uploadPath = Paths.get(uploadDir);
+        
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+        
+        // Get original filename and save the file
+        String originalFilename = file.getOriginalFilename();
+        Path filePath = uploadPath.resolve(originalFilename);
+        
+        // Save the file
+        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+        
+        return "File uploaded successfully: " + originalFilename;
     }
 }
