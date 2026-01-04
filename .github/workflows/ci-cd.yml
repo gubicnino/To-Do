@@ -23,6 +23,9 @@ jobs:
         distribution: 'temurin'
         cache: maven
     
+    - name: Make Maven wrapper executable
+      run: chmod +x Backend/mvnw
+    
     - name: Build Backend with Maven
       run: |
         cd Backend
@@ -83,6 +86,9 @@ jobs:
         java-version: '25'
         distribution: 'temurin'
         cache: maven
+    
+    - name: Make Maven wrapper executable
+      run: chmod +x Backend/mvnw
     
     - name: Wait for MySQL
       run: |
