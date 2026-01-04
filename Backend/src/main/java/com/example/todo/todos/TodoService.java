@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
@@ -28,10 +29,12 @@ import com.itextpdf.layout.properties.UnitValue;
 public class TodoService {
     private final TodoRepository todoRepository;
     private final UserRepository userRepository;
+    private final AttachmentRepository attachmentRepository;
     
-    public TodoService(TodoRepository todoRepository, UserRepository userRepository) {
+    public TodoService(TodoRepository todoRepository, UserRepository userRepository, AttachmentRepository attachmentRepository) {
         this.todoRepository = todoRepository;
         this.userRepository = userRepository;
+        this.attachmentRepository = attachmentRepository;
     }
     
     // Get all todos
@@ -233,6 +236,35 @@ public class TodoService {
         // Save the file
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
         
+        // Create Attachment entity and save to database
+        Attachment attachment = new Attachment();
+        attachment.setFileName(originalFilename);
+        attachment.setFilePath(filePath.toString());
+        attachment.setFileType(file.getContentType());
+        attachment.setFileSize(file.getSize());
+        attachment.setUploadDate(LocalDateTime.now());
+        attachment.setTodo(todo);
+        
+        attachmentRepository.save(attachment);
+        
         return "File uploaded successfully: " + originalFilename;
+    }
+    
+    // Delete attachment
+    public void deleteAttachment(Integer todoId, Integer attachmentId) throws IOException {
+        Attachment attachment = attachmentRepository.findById(attachmentId)
+            .orElseThrow(() -> new RuntimeException("Attachment not found with id: " + attachmentId));
+        
+        // Verify attachment belongs to the specified todo
+        if (!attachment.getTodo().getId().equals(todoId)) {
+            throw new RuntimeException("Attachment does not belong to this todo");
+        }
+        
+        // Delete file from filesystem
+        Path filePath = Paths.get(attachment.getFilePath());
+        Files.deleteIfExists(filePath);
+        
+        // Delete from database
+        attachmentRepository.delete(attachment);
     }
 }

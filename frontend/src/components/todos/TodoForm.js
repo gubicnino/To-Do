@@ -70,8 +70,7 @@ export default function TodoForm() {
     if (!window.confirm('Ali želiš izbrisati to prilogo?')) return;
     
     try {
-      // TODO: FALI SE DELETE ENDPOINT NA BACKENDE
-      await api.delete(`/todos/attachments/${attachmentId}`);
+      await api.delete(`/todos/${id}/attachment/${attachmentId}`);
       setAttachments(prev => prev.filter(a => a.id !== attachmentId));
     } catch (err) {
       console.error('Failed to delete attachment:', err);
@@ -146,9 +145,7 @@ export default function TodoForm() {
         setUploadingFiles([]);
       }
 
-      if (!isEdit) {
-        navigate('/todos');
-      }
+      navigate('/todos');
     } catch (err) {
       alert('Save failed: ' + (err.message || err));
     }

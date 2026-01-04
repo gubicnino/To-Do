@@ -128,4 +128,20 @@ public class TodoRestController {
                 .body("Failed to upload attachment: " + e.getMessage());
         }
     }
+
+    // DELETE /api/v1/todos/{todoId}/attachment/{attachmentId} - Delete attachment
+    @DeleteMapping("/{todoId}/attachment/{attachmentId}")
+    @CrossOrigin
+    public ResponseEntity<String> deleteAttachment(
+        @PathVariable Integer todoId,
+        @PathVariable Integer attachmentId) {
+        
+        try {
+            todoService.deleteAttachment(todoId, attachmentId);
+            return ResponseEntity.ok("Attachment deleted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                .body("Failed to delete attachment: " + e.getMessage());
+        }
+    }
 }
