@@ -234,6 +234,30 @@ export default function TodoList() {
                       {dueDateInfo.isOverdue && !todo.completed && <span className="overdue-label"> OVERDUE</span>}
                     </div>
                   )}
+
+                  {todo.attachments && todo.attachments.length > 0 && (
+                    <div className="todo-attachments-preview">
+                      <div className="attachments-count">
+                        📎 {todo.attachments.length} {todo.attachments.length === 1 ? 'attachment' : 'attachments'}
+                      </div>
+                      <div className="attachments-thumbnails">
+                        {todo.attachments.slice(0, 3).map(att => (
+                          <div key={att.id} className="attachment-thumb" title={att.filename}>
+                            {att.fileType?.startsWith('image/') ? (
+                              <img src={`/api/v1/attachments/${att.id}/download`} alt={att.filename} />
+                            ) : (
+                              <span className="file-icon-small">📄</span>
+                            )}
+                          </div>
+                        ))}
+                        {todo.attachments.length > 3 && (
+                          <div className="attachment-thumb more">
+                            +{todo.attachments.length - 3}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
               <div className="todo-actions">
