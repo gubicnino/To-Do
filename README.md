@@ -1257,4 +1257,82 @@ Podrobno poročilo o testiranju, vključno z:
 
 je na voljo v: **[`testiranje/porocilo_testiranja.md`](testiranje/porocilo_testiranja.md)**
 
+### Scrum dokumentacija
+
+#### Upload prilog za Todo
+
+- Funkcionalnost uporabniku omogoča, da k posameznemu Todo elementu naloži prilogo (slika ali PDF).
+- Datoteka se shrani na disk v mapo, vezano na ID Todo-ja (`priloge/{todoId}`).
+
+Backend
+- Spring Boot REST endpoint za upload prilog.
+- Validacija obstoja Todo-ja, velikosti datoteke (max 5MB) in tipa (PNG, JPG, PDF).
+
+Frontend
+- React obrazec (TodoForm) z možnostjo izbire ene ali več datotek.
+- Datoteke se pošljejo na backend z uporabo `FormData` in `multipart/form-data`.
+
+Status
+- Upload deluje.
+- Download in delete endpointi so predvideni (TODO).
+
+#### UI – Dodajanje prilog k Todo
+
+- Uporabniški vmesnik omogoča dodajanje ene ali več prilog k posameznemu Todo elementu.
+- Uporabnik lahko izbere datoteke preko gumba za upload ali z metodo *drag & drop*.
+- Pred potrditvijo se prikaže seznam izbranih datotek z imenom, velikostjo in predogledom (za slike).
+- Uporabnik lahko pred shranjevanjem odstrani posamezno izbrano datoteko.
+- Priloge se naložijo po uspešnem shranjevanju Todo elementa.
+
+UI elementi
+- Upload gumb z vizualnim namigom (*Click to upload / Drag & drop*).
+- Seznam datotek za nalaganje (preview).
+- Ikone za tip datoteke (slika, PDF, dokument).
+- Gumb za odstranitev datoteke.
+- Prikaz že obstoječih prilog pri urejanju Todo-ja.
+
+Validacije v UI
+- Omejitev velikosti datoteke (max 5MB).
+- Dovoljeni tipi datotek: PNG, JPG, PDF.
+- Onemogočen upload prazne datoteke.
+
+Status
+- UI za dodajanje in prikaz prilog implementiran.
+- Delete in download akcije delno implementirane (TODO).
+
+#### Todo Attachments & CI/CD Pipeline
+
+Backend – Priloge (Attachments)
+- Dodana Attachment entiteta z @ManyToOne relacijo na Todo.
+- Backend ob pridobivanju Todo-jev uporabnika sedaj vrne tudi vse pripadajoče priloge.
+- Implementiran DELETE endpoint za brisanje prilog (/api/v1/todos/{todoId}/attachment/{attachmentId}).
+- Ob brisanju se priloga izbriše iz baze in iz datotečnega sistema.
+
+CI/CD
+- Implementiran CI/CD pipeline z GitHub Actions.
+- Ob vsakem push in pull request na main vejo:
+  - zgradi backend (Spring Boot + Maven),
+  - zgradi frontend (React + npm),
+  - zažene backend unit teste.
+- Pipeline uporablja MySQL servis za izvajanje testov.
+
+Frontend
+- Frontend pravilno prikazuje priloge, pridobljene iz backenda.
+- Dodana podpora za brisanje prilog preko novega DELETE endpointa.
+
+#### CI/CD dokumentacija – Maven wrapper fix
+
+Problem
+CI pipeline ni mogel zagnati Maven wrapperja (mvnw), ker datoteka ni imela nastavljenih pravic za izvajanje.
+
+Rešitev
+- Dodan korak v GitHub Actions workflow, ki nastavi execute pravice za mvnw.
+- S tem je omogočeno pravilno izvajanje Maven ukazov v CI okolju.
+
+Implementacija
+- Uporabljen JDK (Temurin) z Maven cache.
+- Pred gradnjo backenda se izvede:
+```bash
+chmod +x Backend/mvnw
+
 **Zadnja posodobitev:** 14. december 2025
