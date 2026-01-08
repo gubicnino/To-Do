@@ -56,4 +56,9 @@ public class Todo {
     public enum Priority {
         LOW, MEDIUM, HIGH, URGENT
     }
+    @Column(name = "start_time", nullable = false, updatable = false)
+    private LocalDateTime startTime;
+
+    @Column(name = "end_time")
+    private LocalDateTime endTime;
 }

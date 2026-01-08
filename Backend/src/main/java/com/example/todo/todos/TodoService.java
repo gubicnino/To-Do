@@ -56,6 +56,8 @@ public class TodoService {
         }
         
         todo.setUser(user);  // Link todo to user
+        todo.setStartTime(LocalDateTime.now());
+        todo.setEndTime(null);
         return todoRepository.save(todo);
     }
     // Get single todo by ID
@@ -72,11 +74,22 @@ public class TodoService {
     public Todo updateTodo(Integer id, Todo updatedTodo) {
         return todoRepository.findById(id)
             .map(existingTodo -> {
+                // Shrani staro vrednost PRED spreminjanjem
+                boolean wasCompleted = existingTodo.isCompleted();
+                
                 existingTodo.setTitle(updatedTodo.getTitle());
                 existingTodo.setDescription(updatedTodo.getDescription());
                 existingTodo.setCompleted(updatedTodo.isCompleted());
                 existingTodo.setPriority(updatedTodo.getPriority());
                 existingTodo.setDueDate(updatedTodo.getDueDate());
+                
+                // Preveri STARO vs NOVO vrednost
+                if (updatedTodo.isCompleted() && !wasCompleted) {
+                    existingTodo.setEndTime(LocalDateTime.now());
+                } else if (!updatedTodo.isCompleted()) {
+                    existingTodo.setEndTime(null);
+                }
+                
                 return todoRepository.save(existingTodo);
             })
             .orElseThrow(() -> new RuntimeException("Todo not found with id: " + id));
