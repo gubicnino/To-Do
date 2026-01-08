@@ -280,4 +280,61 @@ public class TodoService {
         // Delete from database
         attachmentRepository.delete(attachment);
     }
+
+    // STATISTIKAA
+
+    public Double getAverageTodoDuration(Integer userId) {
+        List<Todo> todos = todoRepository.findByUserId(userId);
+        
+        List<Todo> completedTodos = todos.stream()
+            .filter(todo -> todo.isCompleted() && todo.getEndTime() != null && todo.getStartTime() != null)
+            .toList();
+        
+        if (completedTodos.isEmpty()) {
+            return null;
+        }
+        
+        double totalHours = completedTodos.stream()
+            .mapToDouble(todo -> {
+                long seconds = java.time.Duration.between(todo.getStartTime(), todo.getEndTime()).getSeconds();
+                return seconds / 3600.0;
+            })
+            .sum();
+        
+        return totalHours / completedTodos.size();
+    }
+
+    public Double getTotalTimeSpent(Integer userId) {
+        List<Todo> todos = todoRepository.findByUserId(userId);
+        
+        return todos.stream()
+            .filter(todo -> todo.isCompleted() && todo.getEndTime() != null && todo.getStartTime() != null)
+            .mapToDouble(todo -> {
+                long seconds = java.time.Duration.between(todo.getStartTime(), todo.getEndTime()).getSeconds();
+                return seconds / 3600.0;
+            })
+            .sum();
+    }
+
+    public Double getCompletionPercentage(Integer userId) {
+        List<Todo> todos = todoRepository.findByUserId(userId);
+        
+        if (todos.isEmpty()) {
+            return 0.0;
+        }
+        
+        long completedCount = todos.stream()
+            .filter(Todo::isCompleted)
+            .count();
+        
+        return (completedCount * 100.0) / todos.size();
+    }
+
+    public Long getActiveTasksCount(Integer userId) {
+        List<Todo> todos = todoRepository.findByUserId(userId);
+        
+        return todos.stream()
+            .filter(todo -> !todo.isCompleted())
+            .count();
+    }
 }

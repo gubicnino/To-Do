@@ -144,4 +144,55 @@ public class TodoRestController {
                 .body("Failed to delete attachment: " + e.getMessage());
         }
     }
+
+    // TO VRNE VSE STIRE STATISTIKE ZA ANALIZO (getAnalytics)
+    @GetMapping("/user/{userId}/analytics")
+    public ResponseEntity<TodoAnalytics> getAnalytics(@PathVariable Integer userId) {
+        TodoAnalytics analytics = new TodoAnalytics();
+        analytics.setAverageDuration(todoService.getAverageTodoDuration(userId));
+        analytics.setTotalTimeSpent(todoService.getTotalTimeSpent(userId));
+        analytics.setCompletionPercentage(todoService.getCompletionPercentage(userId));
+        analytics.setActiveTasksCount(todoService.getActiveTasksCount(userId));
+        
+        return ResponseEntity.ok(analytics);
+    }
+
+    static class TodoAnalytics {
+        private Double averageDuration;
+        private Double totalTimeSpent;
+        private Double completionPercentage;
+        private Long activeTasksCount;
+
+        public Double getAverageDuration() {
+            return averageDuration;
+        }
+
+        public void setAverageDuration(Double averageDuration) {
+            this.averageDuration = averageDuration;
+        }
+
+        public Double getTotalTimeSpent() {
+            return totalTimeSpent;
+        }
+
+        public void setTotalTimeSpent(Double totalTimeSpent) {
+            this.totalTimeSpent = totalTimeSpent;
+        }
+
+        public Double getCompletionPercentage() {
+            return completionPercentage;
+        }
+
+        public void setCompletionPercentage(Double completionPercentage) {
+            this.completionPercentage = completionPercentage;
+        }
+
+        public Long getActiveTasksCount() {
+            return activeTasksCount;
+        }
+
+        public void setActiveTasksCount(Long activeTasksCount) {
+            this.activeTasksCount = activeTasksCount;
+        }
+    }
 }
