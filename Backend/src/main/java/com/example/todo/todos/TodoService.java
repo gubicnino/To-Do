@@ -337,4 +337,29 @@ public class TodoService {
             .filter(todo -> !todo.isCompleted())
             .count();
     }
+
+    public float getTimeToCompleteAllTodos(Integer userId) {
+        List<Todo> todos = todoRepository.findByUserId(userId);
+        Double average = getAverageTodoDuration(userId);
+        if (average == null) {
+            return 0.0f;
+        }
+        float totalHours = 0.0f;
+        
+        for (Todo todo : todos) {
+            if (!todo.isCompleted()) {
+                totalHours += average;
+            }
+        }
+
+        
+        
+        return totalHours;
+    }
+    public int getWorkDaysToCompleteAllTodos(Integer userId) {
+        float totalHours = getTimeToCompleteAllTodos(userId);
+        int workDays = (int) Math.ceil(totalHours / 8);
+        
+        return workDays;
+    }
 }

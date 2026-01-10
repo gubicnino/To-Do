@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import lombok.Data;
+
 @RestController
 @CrossOrigin
 @RequestMapping("/todos")
@@ -153,46 +155,20 @@ public class TodoRestController {
         analytics.setTotalTimeSpent(todoService.getTotalTimeSpent(userId));
         analytics.setCompletionPercentage(todoService.getCompletionPercentage(userId));
         analytics.setActiveTasksCount(todoService.getActiveTasksCount(userId));
+        analytics.setTimeToCompleteAllTodos(todoService.getTimeToCompleteAllTodos(userId));
+        analytics.setWorkDaysToCompleteAllTodos(todoService.getWorkDaysToCompleteAllTodos(userId));
         
         return ResponseEntity.ok(analytics);
     }
 
+    
+    @Data
     static class TodoAnalytics {
         private Double averageDuration;
         private Double totalTimeSpent;
         private Double completionPercentage;
         private Long activeTasksCount;
-
-        public Double getAverageDuration() {
-            return averageDuration;
-        }
-
-        public void setAverageDuration(Double averageDuration) {
-            this.averageDuration = averageDuration;
-        }
-
-        public Double getTotalTimeSpent() {
-            return totalTimeSpent;
-        }
-
-        public void setTotalTimeSpent(Double totalTimeSpent) {
-            this.totalTimeSpent = totalTimeSpent;
-        }
-
-        public Double getCompletionPercentage() {
-            return completionPercentage;
-        }
-
-        public void setCompletionPercentage(Double completionPercentage) {
-            this.completionPercentage = completionPercentage;
-        }
-
-        public Long getActiveTasksCount() {
-            return activeTasksCount;
-        }
-
-        public void setActiveTasksCount(Long activeTasksCount) {
-            this.activeTasksCount = activeTasksCount;
-        }
+        private float timeToCompleteAllTodos;
+        private int workDaysToCompleteAllTodos;
     }
 }
