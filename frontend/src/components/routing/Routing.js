@@ -5,6 +5,7 @@ import TodoForm from '../todos/TodoForm';
 import RegisterForm from '../auth/RegsiterForm';
 import Index from '../index/Index';
 import ProtectedRoute from './ProtectedRoute';
+import Vizualizacija_podatkov from '../Vizualizacija_podatkov/Vizualizacija_podatkov';
 
 export default function Routing() {
   return (
@@ -16,12 +17,16 @@ export default function Routing() {
       <Route path="/todos" element={<ProtectedRoute><TodoList /></ProtectedRoute>} />
       <Route path="/todos/new" element={<ProtectedRoute><TodoForm /></ProtectedRoute>} />
       <Route path="/todos/:id/edit" element={<ProtectedRoute><TodoForm /></ProtectedRoute>} />
+    
 
       {/* Auth routes */}
       <Route path="/register" element={<RegisterForm />} />
 
       {/* 404 fallback */}
       <Route path="*" element={<div>Page not found</div>} />
+
+      {/*Analitika routes*/ }
+      <Route path="/Analitika" element={<Vizualizacija_podatkov/>}></Route>
     </Routes>
   );
 }

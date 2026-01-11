@@ -1,6 +1,9 @@
 package com.example.todo.todos;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -171,4 +174,49 @@ public class TodoRestController {
         private float timeToCompleteAllTodos;
         private int workDaysToCompleteAllTodos;
     }
+    @GetMapping("/user/{userId}/analytics/pie")
+public ResponseEntity<PieAnalytics> getPieAnalytics(@PathVariable Integer userId) {
+
+    List<Todo> todos = todoService.getTodosByUserId(userId);
+
+    long total = todos.size();
+    long completed = todos.stream().filter(Todo::isCompleted).count();
+    long active = total - completed;
+
+    Map<String, Long> prioCounts = new HashMap<>();
+    for (Todo t : todos) {
+        String p = (t.getPriority() == null) ? "NONE" : t.getPriority().name();
+        prioCounts.put(p, prioCounts.getOrDefault(p, 0L) + 1);
+    }
+
+    ArrayList<PieSlice> slices = new ArrayList<>();
+    prioCounts.forEach((k, v) -> slices.add(new PieSlice(k, v)));
+
+    PieAnalytics out = new PieAnalytics();
+    out.setTotal(total);
+    out.setCompleted(completed);
+    out.setActive(active);
+    out.setByPriority(slices);
+
+    return ResponseEntity.ok(out);
+}
+
+@Data
+static class PieAnalytics {
+    private long total;
+    private long completed;
+    private long active;
+    private List<PieSlice> byPriority;
+}
+
+@Data
+static class PieSlice {
+    private String name;
+    private long value;
+
+    public PieSlice(String name, long value) {
+        this.name = name;
+        this.value = value;
+    }
+}
 }

@@ -8,7 +8,10 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -362,4 +365,29 @@ public class TodoService {
         
         return workDays;
     }
+
+    public TodoRestController.PieAnalytics getPieAnalytics(Integer userId) {
+    List<Todo> todos = todoRepository.findByUserId(userId);
+
+    long total = todos.size();
+    long completed = todos.stream().filter(Todo::isCompleted).count();
+    long active = total - completed;
+
+    Map<String, Long> prioCounts = new HashMap<>();
+    for (Todo t : todos) {
+        String p = (t.getPriority() == null) ? "NONE" : t.getPriority().name();
+        prioCounts.put(p, prioCounts.getOrDefault(p, 0L) + 1);
+    }
+
+    ArrayList<TodoRestController.PieSlice> slices = new ArrayList<>();
+    prioCounts.forEach((k, v) -> slices.add(new TodoRestController.PieSlice(k, v)));
+
+    TodoRestController.PieAnalytics out = new TodoRestController.PieAnalytics();
+    out.setTotal(total);
+    out.setCompleted(completed);
+    out.setActive(active);
+    out.setByPriority(slices);
+
+    return out;
+}
 }

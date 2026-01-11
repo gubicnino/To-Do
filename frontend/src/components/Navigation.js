@@ -50,6 +50,9 @@ export default function Navigation() {
                   <Link to="/account" className="navbar-link">Account</Link>
                 </li>
                 <li>
+                  <Link to="/Analitika" className="navbar-link">Analitika</Link>
+                </li>
+                <li>
                   <button onClick={handleLogout} className="navbar-link logout-btn">
                     Logout
                   </button>
