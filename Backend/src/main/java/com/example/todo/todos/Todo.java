@@ -7,7 +7,19 @@ import java.util.List;
 import com.example.todo.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import lombok.Data;
 
 @Data
@@ -41,6 +53,17 @@ public class Todo {
 
     @OneToMany(mappedBy = "todo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Attachment> attachments = new ArrayList<>();
+
+    public enum RecurrenceFrequency {
+        NONE, DAILY, WEEKLY, MONTHLY
+    }
+
+    @Column(name = "is_recurring", nullable = false)
+    private boolean isRecurring = false;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "recurrence_frequency")
+    private RecurrenceFrequency recurrenceFrequency = RecurrenceFrequency.NONE;
 
     public enum Priority {
         LOW, MEDIUM, HIGH, URGENT

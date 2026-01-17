@@ -85,10 +85,18 @@ public class TodoService {
                 existingTodo.setCompleted(updatedTodo.isCompleted());
                 existingTodo.setPriority(updatedTodo.getPriority());
                 existingTodo.setDueDate(updatedTodo.getDueDate());
+                existingTodo.setRecurring(updatedTodo.isRecurring());
+                existingTodo.setRecurrenceFrequency(updatedTodo.getRecurrenceFrequency());
                 
                 // Preveri STARO vs NOVO vrednost
                 if (updatedTodo.isCompleted() && !wasCompleted) {
                     existingTodo.setEndTime(LocalDateTime.now());
+                    
+                    // Če je ponavljajoča naloga, ustvari novo
+                    if (existingTodo.isRecurring() && 
+                        existingTodo.getRecurrenceFrequency() != Todo.RecurrenceFrequency.NONE) {
+                        createNextRecurringTask(existingTodo);
+                    }
                 } else if (!updatedTodo.isCompleted()) {
                     existingTodo.setEndTime(null);
                 }
@@ -96,6 +104,45 @@ public class TodoService {
                 return todoRepository.save(existingTodo);
             })
             .orElseThrow(() -> new RuntimeException("Todo not found with id: " + id));
+    }
+    
+    /**
+     * Ustvari novo ponavljajočo nalogo na podlagi zaključene naloge.
+     * Kopira vse lastnosti (naslov, opis, prioriteta, priponke) in 
+     * izračuna nov rok glede na frekvenco ponavljanja.
+     */
+    private Todo createNextRecurringTask(Todo completedTodo) {
+        Todo newTodo = new Todo();
+        
+        newTodo.setTitle(completedTodo.getTitle());
+        newTodo.setDescription(completedTodo.getDescription());
+        newTodo.setPriority(completedTodo.getPriority());
+        newTodo.setUser(completedTodo.getUser());
+        newTodo.setRecurring(completedTodo.isRecurring());
+        newTodo.setRecurrenceFrequency(completedTodo.getRecurrenceFrequency());
+        
+        newTodo.setCompleted(false);
+        newTodo.setStartTime(LocalDateTime.now());
+        newTodo.setEndTime(null);
+        
+        LocalDateTime newDueDate = calculateNextDueDate(
+            completedTodo.getDueDate() != null ? completedTodo.getDueDate() : LocalDateTime.now(),
+            completedTodo.getRecurrenceFrequency()
+        );
+        newTodo.setDueDate(newDueDate);
+        
+        Todo savedTodo = todoRepository.save(newTodo);
+        
+        return savedTodo;
+    }
+    
+    private LocalDateTime calculateNextDueDate(LocalDateTime currentDueDate, Todo.RecurrenceFrequency frequency) {
+        return switch (frequency) {
+            case DAILY -> currentDueDate.plusDays(1);
+            case WEEKLY -> currentDueDate.plusWeeks(1);
+            case MONTHLY -> currentDueDate.plusMonths(1);
+            case NONE -> currentDueDate;
+        };
     }
     
     // Delete todo
