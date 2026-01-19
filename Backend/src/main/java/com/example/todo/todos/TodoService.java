@@ -57,7 +57,9 @@ public class TodoService {
         if (todo.getPriority() == null) {
             todo.setPriority(Todo.Priority.MEDIUM);
         }
-        
+         
+        validateAndNormalizeRecurring(todo);
+
         todo.setUser(user);  // Link todo to user
         todo.setStartTime(LocalDateTime.now());
         todo.setEndTime(null);
@@ -87,7 +89,9 @@ public class TodoService {
                 existingTodo.setDueDate(updatedTodo.getDueDate());
                 existingTodo.setRecurring(updatedTodo.isRecurring());
                 existingTodo.setRecurrenceFrequency(updatedTodo.getRecurrenceFrequency());
-                
+
+                validateAndNormalizeRecurring(existingTodo);
+
                 // Preveri STARO vs NOVO vrednost
                 if (updatedTodo.isCompleted() && !wasCompleted) {
                     existingTodo.setEndTime(LocalDateTime.now());
@@ -436,5 +440,15 @@ public class TodoService {
     out.setByPriority(slices);
 
     return out;
+}
+private void validateAndNormalizeRecurring(Todo todo) {
+    if (todo.isRecurring()) {
+        if (todo.getRecurrenceFrequency() == null || todo.getRecurrenceFrequency() == Todo.RecurrenceFrequency.NONE) {
+            throw new IllegalArgumentException("recurrenceFrequency is required when isRecurring=true");
+        }
+    } else {
+        // normalize: če ni recurring, frekvenca mora biti NONE
+        todo.setRecurrenceFrequency(Todo.RecurrenceFrequency.NONE);
+    }
 }
 }

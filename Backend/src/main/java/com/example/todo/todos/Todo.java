@@ -7,6 +7,7 @@ import java.util.List;
 import com.example.todo.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -57,7 +58,8 @@ public class Todo {
     public enum RecurrenceFrequency {
         NONE, DAILY, WEEKLY, MONTHLY
     }
-
+  
+    @JsonProperty("isRecurring")
     @Column(name = "is_recurring", nullable = false)
     private boolean isRecurring = false;
 
