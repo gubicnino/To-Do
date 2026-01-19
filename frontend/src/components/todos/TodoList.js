@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import './TodoList.css';
 import { useUser } from '../../context/UserContext';
 import api from '../../services/api';
+import Modal from '../common/Modal';
 
 
 export default function TodoList() {
@@ -12,6 +13,9 @@ export default function TodoList() {
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState('all'); 
   const [sortBy, setSortBy] = useState('dueDate');
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [todoToDelete, setTodoToDelete] = useState(null);
+  const [errorModal, setErrorModal] = useState({ open: false, message: '' });
   const {currentUser} = useUser();
   const userId = currentUser?.id;
   const navigate = useNavigate();
@@ -49,7 +53,7 @@ export default function TodoList() {
       link.remove();
       window.URL.revokeObjectURL(url);
     } catch (err) {
-      alert('PDF export failed: ' + (err.message || err));
+      setErrorModal({ open: true, message: 'PDF export failed: ' + (err.message || err) });
     }
   };
 
@@ -68,17 +72,28 @@ export default function TodoList() {
       link.remove();
       window.URL.revokeObjectURL(url);
     } catch (err) {
-      alert('PDF export failed: ' + (err.message || err));
+      setErrorModal({ open: true, message: 'PDF export failed: ' + (err.message || err) });
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Delete this todo?')) return;
+  const openDeleteModal = (todo) => {
+    setTodoToDelete(todo);
+    setDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setDeleteModalOpen(false);
+    setTodoToDelete(null);
+  };
+
+  const confirmDelete = async () => {
+    if (!todoToDelete) return;
     try {
-      await deleteTodo(id);
-      setTodos(prev => prev.filter(t => t.id !== id));
+      await deleteTodo(todoToDelete.id);
+      setTodos(prev => prev.filter(t => t.id !== todoToDelete.id));
+      closeDeleteModal();
     } catch (err) {
-      alert('Delete failed: ' + (err.message || err));
+      setErrorModal({ open: true, message: 'Delete failed: ' + (err.message || err) });
     }
   };
 
@@ -88,7 +103,7 @@ export default function TodoList() {
       await updateTodo(todo.id, updated);
       setTodos(prev => prev.map(t => t.id === todo.id ? updated : t));
     } catch (err) {
-      alert('Update failed: ' + (err.message || err));
+      setErrorModal({ open: true, message: 'Update failed: ' + (err.message || err) });
     }
   };
 
@@ -112,6 +127,50 @@ export default function TodoList() {
       formatted: date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
       isOverdue
     };
+  };
+
+  const getRecurrenceIcon = (frequency) => {
+    const icons = {
+      DAILY: '🔄',
+      WEEKLY: '📅',
+      MONTHLY: '🗓️',
+      NONE: ''
+    };
+    return icons[frequency] || '';
+  };
+
+  const getRecurrenceLabel = (frequency) => {
+    const labels = {
+      DAILY: 'Dnevno',
+      WEEKLY: 'Tedensko',
+      MONTHLY: 'Mesečno',
+      NONE: ''
+    };
+    return labels[frequency] || '';
+  };
+
+  const calculateNextOccurrence = (dueDate, frequency) => {
+    if (!dueDate || frequency === 'NONE') return null;
+    
+    const date = new Date(dueDate);
+    const now = new Date();
+    
+    // If due date is in the future, that's the next occurrence
+    if (date > now) return date;
+    
+    // Calculate next occurrence based on frequency
+    const next = new Date(date);
+    while (next < now) {
+      if (frequency === 'DAILY') {
+        next.setDate(next.getDate() + 1);
+      } else if (frequency === 'WEEKLY') {
+        next.setDate(next.getDate() + 7);
+      } else if (frequency === 'MONTHLY') {
+        next.setMonth(next.getMonth() + 1);
+      }
+    }
+    
+    return next;
   };
 
   // Filter todos
@@ -205,8 +264,9 @@ export default function TodoList() {
         <div className="todo-grid">
           {sortedTodos.map(todo => {
             const dueDateInfo = formatDueDate(todo.dueDate);
+            const nextOccurrence = todo.isRecurring ? calculateNextOccurrence(todo.dueDate, todo.recurrenceFrequency) : null;
             return (
-              <div key={todo.id} className={`todo-card ${todo.completed ? 'completed' : ''}`}>
+              <div key={todo.id} className={`todo-card ${todo.completed ? 'completed' : ''} ${todo.isRecurring ? 'recurring' : ''}`}>
                 <div className="todo-card-header">
                   <div className="todo-checkbox">
                     <input 
@@ -215,6 +275,11 @@ export default function TodoList() {
                       onChange={() => toggleComplete(todo)}
                     />
                   </div>
+                  {todo.isRecurring && (
+                    <div className="recurring-badge" title={`Ponavljajoča naloga: ${getRecurrenceLabel(todo.recurrenceFrequency)}`}>
+                      {getRecurrenceIcon(todo.recurrenceFrequency)} {getRecurrenceLabel(todo.recurrenceFrequency)}
+                    </div>
+                  )}
                   <div 
                     className="todo-priority"
                     style={{ backgroundColor: getPriorityColor(todo.priority) }}
@@ -232,6 +297,12 @@ export default function TodoList() {
                     <div className={`todo-due-date ${dueDateInfo.isOverdue && !todo.completed ? 'overdue' : ''}`}>
                       📅 {dueDateInfo.formatted}
                       {dueDateInfo.isOverdue && !todo.completed && <span className="overdue-label"> OVERDUE</span>}
+                    </div>
+                  )}
+
+                  {todo.isRecurring && nextOccurrence && (
+                    <div className="next-occurrence">
+                      ⏭️ Naslednji: {nextOccurrence.toLocaleDateString()} {nextOccurrence.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                     </div>
                   )}
 
@@ -264,7 +335,7 @@ export default function TodoList() {
                 <Link to={`/todos/${todo.id}/edit`} className="btn-edit">
                     Edit
                 </Link>
-              <button onClick={() => handleDelete(todo.id)} className="btn-delete">
+              <button onClick={() => openDeleteModal(todo)} className="btn-delete">
                 Delete
               </button>
               <button onClick={() => generatePDF(todo.id)} className="btn-pdf">
@@ -277,6 +348,36 @@ export default function TodoList() {
           })}
         </div>
       )}
+
+      <Modal isOpen={deleteModalOpen} onClose={closeDeleteModal}>
+        <div className="delete-modal">
+          <div className="delete-modal-icon">⚠️</div>
+          <h3>Delete Todo?</h3>
+          <p>
+            Are you sure you want to delete <strong>"{todoToDelete?.title}"</strong>? 
+            This action cannot be undone.
+          </p>
+          <div className="delete-modal-actions">
+            <button className="btn-cancel" onClick={closeDeleteModal}>
+              Cancel
+            </button>
+            <button className="btn-delete-confirm" onClick={confirmDelete}>
+              Delete
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal isOpen={errorModal.open} onClose={() => setErrorModal({ open: false, message: '' })}>
+        <div className="error-modal">
+          <div className="error-modal-icon">❌</div>
+          <h3>Error</h3>
+          <p>{errorModal.message}</p>
+          <button className="btn-primary" onClick={() => setErrorModal({ open: false, message: '' })}>
+            OK
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 }

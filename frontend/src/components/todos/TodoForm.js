@@ -3,6 +3,7 @@ import { createTodo, getTodo, updateTodo } from '../../services/todos';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useUser } from '../../context/UserContext';
 import api from '../../services/api';
+import Modal from '../common/Modal';
 import './TodoForm.css';
 import './Attachments.css';
 
@@ -15,8 +16,12 @@ export default function TodoForm() {
   const [priority, setPriority] = useState('MEDIUM');
   const [dueDate, setDueDate] = useState('');
   const [completed, setCompleted] = useState(false);
+  const [isRecurring, setIsRecurring] = useState(false);
+  const [recurrenceFrequency, setRecurrenceFrequency] = useState('NONE');
   const [attachments, setAttachments] = useState([]);
   const [uploadingFiles, setUploadingFiles] = useState([]);
+  const [errorModal, setErrorModal] = useState({ open: false, message: '' });
+  const [deleteAttachmentModal, setDeleteAttachmentModal] = useState({ open: false, attachmentId: null });
   const { currentUser } = useUser();
   const userId = currentUser?.id;
   const [loading, setLoading] = useState(isEdit);
@@ -31,6 +36,8 @@ export default function TodoForm() {
         setDescription(data.description || '');
         setPriority(data.priority || 'MEDIUM');
         setCompleted(data.completed || false);
+        setIsRecurring(data.isRecurring || false);
+        setRecurrenceFrequency(data.recurrenceFrequency || 'NONE');
         setAttachments(data.attachments || []);
         
         // Format dueDate for datetime-local input
@@ -40,7 +47,7 @@ export default function TodoForm() {
           setDueDate(formatted);
         }
       } catch (err) {
-        alert('Failed to load todo');
+        setErrorModal({ open: true, message: 'Failed to load todo: ' + (err.message || err) });
       } finally {
         setLoading(false);
       }
@@ -67,14 +74,20 @@ export default function TodoForm() {
   };
 
   const removeAttachment = async (attachmentId) => {
-    if (!window.confirm('Ali želiš izbrisati to prilogo?')) return;
+    setDeleteAttachmentModal({ open: true, attachmentId });
+  };
+
+  const confirmDeleteAttachment = async () => {
+    const attachmentId = deleteAttachmentModal.attachmentId;
+    if (!attachmentId) return;
     
     try {
       await api.delete(`/todos/${id}/attachment/${attachmentId}`);
       setAttachments(prev => prev.filter(a => a.id !== attachmentId));
+      setDeleteAttachmentModal({ open: false, attachmentId: null });
     } catch (err) {
       console.error('Failed to delete attachment:', err);
-      alert('Ni uspelo izbrisati priloge. Poskusi ponovno.');
+      setErrorModal({ open: true, message: 'Ni uspelo izbrisati priloge. Poskusi ponovno.' });
     }
   };
 
@@ -106,7 +119,9 @@ export default function TodoForm() {
         description,
         priority,
         completed,
-        dueDate: dueDate ? new Date(dueDate).toISOString() : null
+        dueDate: dueDate ? new Date(dueDate).toISOString() : null,
+        isRecurring,
+        recurrenceFrequency: isRecurring ? recurrenceFrequency : 'NONE'
       };
 
       let todoId;
@@ -147,7 +162,7 @@ export default function TodoForm() {
 
       navigate('/todos');
     } catch (err) {
-      alert('Save failed: ' + (err.message || err));
+      setErrorModal({ open: true, message: 'Save failed: ' + (err.message || err) });
     }
   };
 
@@ -301,6 +316,35 @@ export default function TodoForm() {
           </div>
         </div>
 
+        <div className="form-group recurring-section">
+          <div className="checkbox-group">
+            <input
+              type="checkbox"
+              id="isRecurring"
+              checked={isRecurring}
+              onChange={e => setIsRecurring(e.target.checked)}
+            />
+            <label htmlFor="isRecurring">🔄 Ponavljajoča naloga</label>
+          </div>
+          
+          {isRecurring && (
+            <div className="recurring-options">
+              <label htmlFor="recurrenceFrequency">Frekvenca ponavljanja</label>
+              <select
+                id="recurrenceFrequency"
+                value={recurrenceFrequency}
+                onChange={e => setRecurrenceFrequency(e.target.value)}
+                required={isRecurring}
+              >
+                <option value="NONE">Brez ponavljanja</option>
+                <option value="DAILY">🔄 Dnevno</option>
+                <option value="WEEKLY">📅 Tedensko</option>
+                <option value="MONTHLY">🗓️ Mesečno</option>
+              </select>
+            </div>
+          )}
+        </div>
+
         {isEdit && (
           <div className="form-group checkbox-group">
             <label>
@@ -323,6 +367,33 @@ export default function TodoForm() {
           </button>
         </div>
       </form>
+
+      <Modal isOpen={errorModal.open} onClose={() => setErrorModal({ open: false, message: '' })}>
+        <div className="error-modal">
+          <div className="error-modal-icon">❌</div>
+          <h3>Error</h3>
+          <p>{errorModal.message}</p>
+          <button className="btn-primary" onClick={() => setErrorModal({ open: false, message: '' })}>
+            OK
+          </button>
+        </div>
+      </Modal>
+
+      <Modal isOpen={deleteAttachmentModal.open} onClose={() => setDeleteAttachmentModal({ open: false, attachmentId: null })}>
+        <div className="delete-modal">
+          <div className="delete-modal-icon">⚠️</div>
+          <h3>Izbriši prilogo?</h3>
+          <p>Ali si prepričan, da želiš izbrisati to prilogo? Tega dejanja ni mogoče razveljaviti.</p>
+          <div className="delete-modal-actions">
+            <button className="btn-cancel" onClick={() => setDeleteAttachmentModal({ open: false, attachmentId: null })}>
+              Prekliči
+            </button>
+            <button className="btn-delete-confirm" onClick={confirmDeleteAttachment}>
+              Izbriši
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

@@ -6,8 +6,8 @@ import java.util.List;
 
 import com.example.todo.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -72,7 +72,7 @@ public class Todo {
     }
 
     // Ustvarjen ob kreiranju
-    @Column(name = "start_time", nullable = false, updatable = false)
+    @Column(name = "start_time", updatable = false)
     private LocalDateTime startTime;
 
     // Nastavljen ko je completed=true

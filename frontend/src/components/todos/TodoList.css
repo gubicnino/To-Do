@@ -207,6 +207,7 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  margin-left: auto;
 }
 
 .todo-content {
@@ -432,4 +433,172 @@
   .todo-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* Recurring Tasks Styles */
+.recurring-badge {
+  padding: 0.4rem 0.9rem;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 6px rgba(156, 39, 176, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+}
+
+.todo-card.recurring {
+  border-left: 4px solid #9C27B0;
+  background: linear-gradient(135deg, #ffffff 0%, #f3e5f5 100%);
+}
+
+.next-occurrence {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #7B1FA2;
+  font-weight: 600;
+  padding: 0.5rem;
+  background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+  border-radius: 6px;
+  border-left: 3px solid #9C27B0;
+}
+
+.todo-card.recurring:hover {
+  box-shadow: 0 8px 24px rgba(156, 39, 176, 0.2);
+}
+
+/* Delete Modal Styles */
+.delete-modal {
+  text-align: center;
+  padding: 1rem;
+}
+
+.delete-modal-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.delete-modal h3 {
+  color: #1a1a1a;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.delete-modal p {
+  color: #555;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.delete-modal p strong {
+  color: #F44336;
+  font-weight: 600;
+}
+
+.delete-modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.delete-modal-actions button {
+  padding: 0.85rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.btn-cancel {
+  background-color: #f5f5f5;
+  color: #555;
+  border: 2px solid #e0e0e0;
+}
+
+.btn-cancel:hover {
+  background-color: #e8e8e8;
+  border-color: #d0d0d0;
+  transform: translateY(-2px);
+}
+
+.btn-delete-confirm {
+  background: linear-gradient(135deg, #F44336 0%, #D32F2F 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
+}
+
+.btn-delete-confirm:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(244, 67, 54, 0.4);
+}
+
+/* Error Modal Styles */
+.error-modal {
+  text-align: center;
+  padding: 1rem;
+}
+
+.error-modal-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+}
+
+.error-modal h3 {
+  color: #F44336;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.error-modal p {
+  color: #555;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.error-modal .btn-primary {
+  padding: 0.85rem 2.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.error-modal .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
 }
