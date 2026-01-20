@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
-import Modal from './common/Modal';
-import { useNavigate } from 'react-router-dom';
 import LoginForm from './auth/LoginForm';
+import Modal from './common/Modal';
 import './Navigation.css';
 
 export default function Navigation() {
@@ -41,14 +40,8 @@ export default function Navigation() {
                 <Link to="/todos" className="navbar-link">Todos</Link>
               </li>
             )}
-            <li>
-              <Link to="/pricing" className="navbar-link">Pricing</Link>
-            </li>
             {isLoggedIn ? (
               <>
-                <li>
-                  <Link to="/account" className="navbar-link">Account</Link>
-                </li>
                 <li>
                   <Link to="/Analitika" className="navbar-link">Analitika</Link>
                 </li>

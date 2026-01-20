@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { deleteTodo, getUserTodos, updateTodo } from '../../services/todos';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import './TodoList.css';
 import { useUser } from '../../context/UserContext';
 import api from '../../services/api';
+import { deleteTodo, getUserTodos, updateTodo } from '../../services/todos';
 import Modal from '../common/Modal';
+import './TodoList.css';
 
 
 export default function TodoList() {
@@ -101,7 +101,8 @@ export default function TodoList() {
     try {
       const updated = { ...todo, completed: !todo.completed };
       await updateTodo(todo.id, updated);
-      setTodos(prev => prev.map(t => t.id === todo.id ? updated : t));
+      const data = await getUserTodos(userId);
+      setTodos(data);
     } catch (err) {
       setErrorModal({ open: true, message: 'Update failed: ' + (err.message || err) });
     }
@@ -300,11 +301,7 @@ export default function TodoList() {
                     </div>
                   )}
 
-                  {todo.isRecurring && nextOccurrence && (
-                    <div className="next-occurrence">
-                      ⏭️ Naslednji: {nextOccurrence.toLocaleDateString()} {nextOccurrence.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                    </div>
-                  )}
+              
 
                   {todo.attachments && todo.attachments.length > 0 && (
                     <div className="todo-attachments-preview">
